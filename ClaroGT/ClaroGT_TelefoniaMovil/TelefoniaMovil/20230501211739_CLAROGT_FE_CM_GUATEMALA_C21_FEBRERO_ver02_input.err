@@ -1,0 +1,3 @@
+"JobID"	"Reason"	"Record"	"Timestamp"	"Username"
+"e857da8d-02f1-4e99-8db2-01ece91179c5"	"Error at line number: 12190, while processing Tag: 200207, the parent tag 200206, for this tag has not yet been processed."	"2002077TOTAL A PAGAR                                                                                      Q       125.00"	"Mon May 01 21:17:44 CST 2023"	"admin"
+"e857da8d-02f1-4e99-8db2-01ece91179c5"	"Error at line number: 16283, while processing Tag: 200206, the parent tag 200205, for this tag has not yet been processed."	"2002066Paquete de 100 horas de YouTube                                                      "	"Mon May 01 21:17:44 CST 2023"	"admin"
