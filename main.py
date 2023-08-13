@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from ioutils import file_stream_reader 
-from parser import parse, segment_bills
+from parser import parse
 import pprint
 
 def get_parameters():
@@ -10,17 +10,10 @@ def get_parameters():
     return params
 
 def main():
-    params = get_parameters()
-        
+    params = get_parameters()  
     fp = file_stream_reader(params["filename"])
-    payloads = parse(fp)
-    segmented_bills = segment_bills(payloads)
-
-    bills = segmented_bills
-    bill = bills[0]
-    # print(bill)
-    bill.insert(0, bill)
-    pprint.pprint(bill)
+    bill = parse(fp)
+    return bill
 
 if __name__ == '__main__':
     main()
