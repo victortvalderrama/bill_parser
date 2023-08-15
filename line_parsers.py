@@ -16,7 +16,7 @@ def generic_predicate(bill, line_index, parsed, field_name):
 
 def split_predicate(line_index, parsed, bill, split_len):
     tokens = parsed.predicate.split()
-    if len(tokens) < split_len:
+    if len(tokens) != split_len:
         error_msg = f"Could not split line in {split_len}"
 
         section_name = getattr(SECTION_NAME_MAP, parsed.section_index, "UNKNOWN SECTION")
@@ -183,15 +183,14 @@ def parse_0200100(bill,line_index,parsed):
     tokens = parsed.predicate.split()
     bill.periodoFacturado = tokens[-1]
         
-parse_0100200 = partial(generic_predicate, field_name="concepto_cobro")
+parse_0200200 = partial(generic_predicate, field_name="concepto_cobro")
 # def parse_0200200(bill,line_index,parsed):
 #     # 0200200RESUMEN CONCEPTO DE COBRO
 #     #bill.conceptosCobro = [] # new List
 #     undefined_line(line_index, parsed)
         
-def parse_0200300(bill,line_index,parsed): # SALDO ANTERIOR
-    # undefined_line(line_index, parsed)
-    tokens = split_predicate(line_index,parsed,bill,4)
+def parse_0200300(bill,line_index,parsed): # SALDO ANTERIORm
+    tokens = split_predicate(line_index,parsed,bill,5)
     # bill.periodo = tokens.pop()
     # bill.conceptoCobrobill = tokens.pop()
     # conceptoCobrobill.valor = {
@@ -206,7 +205,7 @@ def parse_0200300(bill,line_index,parsed): # SALDO ANTERIOR
     # bill.conceptosCobro << conceptoCobrobill
         
 def parse_0200400(bill,line_index,parsed): # SU PAGO GRACIAS
-    tokens = split_predicate(line_index,parsed,bill,3)
+    tokens = split_predicate(line_index,parsed,bill,5)
     # TxtDigester.bill conceptoCobrobill = new TxtDigester.bill()
     # conceptoCobrobill.valor = {
     #     def valor = FormatUtil.currencyToNumberFormatter(tokens.pop())
@@ -220,8 +219,7 @@ def parse_0200400(bill,line_index,parsed): # SU PAGO GRACIAS
     # bill.conceptosCobro << conceptoCobrobill
         
 def parse_0200500(bill,line_index,parsed): # SALDO INICIAL
-    undefined_line(line_index, parsed)
-    # def tokens = line[7..-1].tokenize()
+    tokens = split_predicate(line_index, parsed, bill, 5)
     # TxtDigester.bill conceptoCobrobill = new TxtDigester.bill()
     # conceptoCobrobill.periodo = tokens.pop()
     # conceptoCobrobill.valor = {
@@ -236,8 +234,7 @@ def parse_0200500(bill,line_index,parsed): # SALDO INICIAL
     # bill.conceptosCobro << conceptoCobrobill
         
 def parse_0200600(bill,line_index,parsed): # CARGOS DEL MES
-    undefined_line(line_index, parsed)
-    # def tokens = line[7..-1].tokenize()
+    tokens = split_predicate(line_index, parsed, bill, 3)
     # TxtDigester.bill conceptoCobrobill = new TxtDigester.bill()
     # conceptoCobrobill.nombre = tokens.join(' ')
     # bill.conceptosCobro << conceptoCobrobill
