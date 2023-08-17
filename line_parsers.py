@@ -2,6 +2,7 @@ from functools import partial
 from collections import namedtuple
 from models import LineError, SECTION_NAME_MAP
 from ioutils import *
+import re
 
 # SECTION 010000
 
@@ -10,20 +11,28 @@ def parse_0100000(bill, line_index, parsed):
     bill._01_id = parsed.section_index
     bill.segmentacion = parsed.predicate
 
+person_ids_seen = set()
 def parse_0100100(bill, line_index, parsed):
-    line = parsed.predicate
-    
-    # if len(line) == 15:
-    #     line += " " *(29 - 15)
-    
-    # bill.person_id = line[-9:].strip()
-    # bill.fecha_emision = line[:11]
-    # bill.imprime_ciclo = line[11:12]
-    # bill.con_inanciamiento = line[12:13]
-    # bill.tipoFactura = line[13:14]
-    # bill.imprimeBPS = line[14:15]
-    # bill.refactura = 'N'
+    tokens = split_predicate(line_index, parsed, bill, 4)
+    expected_patterns = [
+        ("EMISION:", "First token is missing or does not match the expected pattern."),
+        (r"\d{1,2}/[A-Z]{3}/\d{4}[A-Z]{2}", "Second token is missing or does not match the expected pattern."),
+        (['N'], "Third token is missing or does not match the expected pattern."),
+        (r"\d{9}", "Fourth token has no person ID."),
+    ]
 
+    errors = validate_tokens(tokens, expected_patterns)
+
+    person_id = tokens[3] if tokens and len(tokens) > 3 else None
+
+    if person_id and person_id in person_ids_seen:
+        error_message = "Person ID is duplicated."
+        append_line_error(bill, parsed, line_index, error_message)
+    elif person_id:
+        person_ids_seen.add(person_id)
+    
+    for error_message in errors:
+        append_line_error(bill, parsed, line_index, error_message)
     
 
 parse_0100200 = partial(generic_predicate, field_name="emisor_nombre")
@@ -32,61 +41,26 @@ parse_0100400 = partial(generic_predicate, field_name="emisor_dir_l2")
 
 def parse_0100500(bill, line_index, parsed):
     tokens = split_predicate(line_index, parsed, bill, 3)
+    expected_patterns = [
+        (r"\d{5}", "First token is missing or does not match the expected pattern."),
+        ("N.I.T.", "Second token is missing or does not match the expected pattern."),
+        (r"\d{6}-\d", "Third token is missing or does not match the expected pattern."),
+    ]
+    errors = validate_tokens(tokens, expected_patterns)
     
-    if not tokens:
-        return
-
-    bill.emisor_dir_l3 = tokens[0]
-    bill.emisor_NIT = tokens[2]
+    for error_message in errors:
+        append_line_error(bill, parsed, line_index, error_message)
 
 def parse_0100600(bill, line_index, parsed):
     tokens = split_predicate(line_index, parsed, bill, 6)
 
-    if not tokens:
-        return
-
-    bill.factura_serie = tokens[2]
-    
-    if bill.factura_serie == 'NUMERO':
-        bill.factura_serie = ' '
-    
-    bill.numero_autorizacion = tokens[-1]
-    if bill.numero_autorizacion == 'AUTORIZACION:':
-        bill.numero_autorizacion = ' '
-    
-
 def parse_0100700(bill, line_index, parsed):
     tokens = split_predicate(line_index, parsed, bill, 8)
-    
-    if not tokens:
-        return
-    
-    bill.documento_numero = tokens[1]
-
-    if bill.documento_numero == 'PARA':
-        bill.documento_numero = ' '
-        bill.documento_numero_V2 = bill.documento_numero.replace(',', '')
-        bill.consultas = " ".join(tokens[1:-1])
-    
-    else:
-        bill.documento_numero_V2 = bill.documento_numero.replace(',', '')
-        bill.consultas = " ".join(tokens[2:-1])
-
 
 def parse_0100800(bill, line_index, parsed):
     tokens = parsed.predicate.split()
-    
-    if not tokens:
-        return
-    
-    refTokens = tokens[1].split('//')
-    # print(refTokens)
-    bill.ciclo = refTokens[0]
-    bill.correlativo = refTokens[1]
-    if len(tokens) == 8:
-        bill.rutaCourier = tokens[2]
-    else:
-        bill.rutaCourier = ' '
+    if len(tokens) < 7:
+        append_line_error(bill, parsed, line_index, "there is not the minimum length for tokens")
 
 parse_0100900 = partial(generic_predicate, field_name="receptor_nombre")
 

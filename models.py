@@ -23,17 +23,24 @@ Line = namedtuple(
 )
 
 SECTION_NAME_MAP = {
-    "0100000": "START DELIMTER",
+    "0100000": "START DELIMITER",
     "5000100": "END DELIMITER"
 }
 
 REQUIRED_SECTIONS_AT_LEAST_ONCE = [
     "0100000",
+    # "0200000",
+    # "0200100",
+    # "0200200",
+    # "0200300",
+    # "0200400",
+    # "0200500",
+    # "0200600",
     "5000100",
 ]
 
 REQUIRED_SECTIONS_AT_LEAST_TWICE = [
-    "",
+    # "",
 ]
 
 
