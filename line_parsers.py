@@ -1,38 +1,7 @@
 from functools import partial
 from collections import namedtuple
 from models import LineError, SECTION_NAME_MAP
-
-# Helpers
-
-def undefined_line(line_index, parsed):
-    # print(f"Undefined behaviour at l: {line_index} for line id: {parsed.section_index}")
-    # print(f"Predicate is: {parsed.predicate}")
-    pass
-
-def generic_predicate(bill, line_index, parsed, field_name):
-    value = parsed.predicate.strip() + f"#{line_index}"
-    setattr(bill, field_name, value)
-
-
-def split_predicate(line_index, parsed, bill, split_len):
-    tokens = parsed.predicate.split()
-    if len(tokens) != split_len:
-        error_msg = f"Could not split line in {split_len}"
-
-        section_name = getattr(SECTION_NAME_MAP, parsed.section_index, "UNKNOWN SECTION")
-
-        error = LineError(
-            line_section_index=parsed.section_index,
-            section_name=section_name,
-            predicate=parsed.predicate,
-            line_index=line_index,
-            error=error_msg
-        )
-
-        bill.errors.append(error)
-        return None
-    return tokens
-
+from ioutils import *
 
 # SECTION 010000
 
@@ -42,18 +11,18 @@ def parse_0100000(bill, line_index, parsed):
     bill.segmentacion = parsed.predicate
 
 def parse_0100100(bill, line_index, parsed):
-    # undefined_line(line_index, parsed)
-    line = parsed.predicate[82:]
-    if len(line) == 15:
-        line += " " *(29 - 15)
+    line = parsed.predicate
     
-    bill.person_id = line[-9:].strip()
-    bill.fecha_emision = line[:11]
-    bill.imprime_ciclo = line[11:12]
-    bill.con_inanciamiento = line[12:13]
-    bill.tipoFactura = line[13:14]
-    bill.imprimeBPS = line[14:15]
-    bill.refactura = 'N'
+    # if len(line) == 15:
+    #     line += " " *(29 - 15)
+    
+    # bill.person_id = line[-9:].strip()
+    # bill.fecha_emision = line[:11]
+    # bill.imprime_ciclo = line[11:12]
+    # bill.con_inanciamiento = line[12:13]
+    # bill.tipoFactura = line[13:14]
+    # bill.imprimeBPS = line[14:15]
+    # bill.refactura = 'N'
 
     
 
@@ -71,7 +40,7 @@ def parse_0100500(bill, line_index, parsed):
     bill.emisor_NIT = tokens[2]
 
 def parse_0100600(bill, line_index, parsed):
-    tokens = split_predicate(line_index, parsed, bill, 3)
+    tokens = split_predicate(line_index, parsed, bill, 6)
 
     if not tokens:
         return
@@ -87,7 +56,7 @@ def parse_0100600(bill, line_index, parsed):
     
 
 def parse_0100700(bill, line_index, parsed):
-    tokens = split_predicate(line_index, parsed, bill, 4)
+    tokens = split_predicate(line_index, parsed, bill, 8)
     
     if not tokens:
         return
@@ -191,275 +160,164 @@ parse_0200200 = partial(generic_predicate, field_name="concepto_cobro")
         
 def parse_0200300(bill,line_index,parsed): # SALDO ANTERIORm
     tokens = split_predicate(line_index,parsed,bill,5)
-    # bill.periodo = tokens.pop()
-    # bill.conceptoCobrobill = tokens.pop()
-    # conceptoCobrobill.valor = {
-    #     def valor = FormatUtil.currencyToNumberFormatter(tokens.pop())
-    #     def currency = tokens.pop()
-    #     if (currency == 'Q-') {
-    #         valor = "-${valor}"
-    #     }
-    #     return valor
-    # }.call()
-    # conceptoCobrobill.nombre = tokens.join(' ')
-    # bill.conceptosCobro << conceptoCobrobill
+    
         
 def parse_0200400(bill,line_index,parsed): # SU PAGO GRACIAS
     tokens = split_predicate(line_index,parsed,bill,5)
-    # TxtDigester.bill conceptoCobrobill = new TxtDigester.bill()
-    # conceptoCobrobill.valor = {
-    #     def valor = FormatUtil.currencyToNumberFormatter(tokens.pop())
-    #     def currency = tokens.pop()
-    #     if (currency == 'Q-') {
-    #         valor = "-${valor}"
-    #     }
-    #     return valor
-    # }.call()
-    # conceptoCobrobill.nombre = 'PAGOS EFECTUADOS (-)'
-    # bill.conceptosCobro << conceptoCobrobill
+    
         
 def parse_0200500(bill,line_index,parsed): # SALDO INICIAL
     tokens = split_predicate(line_index, parsed, bill, 5)
-    # TxtDigester.bill conceptoCobrobill = new TxtDigester.bill()
-    # conceptoCobrobill.periodo = tokens.pop()
-    # conceptoCobrobill.valor = {
-    #     def valor = FormatUtil.currencyToNumberFormatter(tokens.pop())
-    #     def currency = tokens.pop()
-    #     if (currency == 'Q-') {
-    #         valor = "-${valor}"
-    #     }
-    #     return valor
-    # }.call()
-    # conceptoCobrobill.nombre = tokens.join(' ')
-    # bill.conceptosCobro << conceptoCobrobill
+    
         
 def parse_0200600(bill,line_index,parsed): # CARGOS DEL MES
     tokens = split_predicate(line_index, parsed, bill, 3)
-    # TxtDigester.bill conceptoCobrobill = new TxtDigester.bill()
-    # conceptoCobrobill.nombre = tokens.join(' ')
+    bill. cobro_section_nombre = " ".join(tokens)
     # bill.conceptosCobro << conceptoCobrobill
         
 def parse_0200700(bill,line_index,parsed): # FINANCIAMIENTO
-    undefined_line(line_index, parsed)
-    # def tokens = line[7..-1].tokenize()
-    # TxtDigester.bill conceptoCobrobill = new TxtDigester.bill()
-    # conceptoCobrobill.valor = {
-    #     def valor = FormatUtil.currencyToNumberFormatter(tokens.pop())
-    #     def currency = tokens.pop()
-    #     if (currency == 'Q-') {
-    #         valor = "-${valor}"
-    #     }
-    #     return valor
-    # }.call()
-    # conceptoCobrobill.nombre = tokens.join(' ')
-    # bill.conceptosCobro << conceptoCobrobill
+    tokens = split_predicate(line_index, parsed, bill, 5)
+    
         
 def parse_0200800(bill,line_index,parsed): # SALDO INICIAL + FINANCIAMIENTO
-    undefined_line(line_index, parsed)
-    # def tokens = line[7..-1].tokenize()
-    # TxtDigester.bill conceptoCobrobill = new TxtDigester.bill()
-    # conceptoCobrobill.valor = {
-    #     def valor = FormatUtil.currencyToNumberFormatter(tokens.pop())
-    #     def currency = tokens.pop()
-    #     if (currency == 'Q-') {
-    #         valor = "-${valor}"
-    #     }
-    #     return valor
-    # }.call()
-    # conceptoCobrobill.nombre = tokens.join(' ')
-    # bill.conceptosCobro << conceptoCobrobill
+    tokens = split_predicate(line_index, parsed, bill, 5)
+   
     
 # SECTION 030000
 
 def parse_0300000(bill,line_index,parsed): # FINANCIAMIENTOS
-    #sectionRecord.financiamientos = []
     undefined_line(line_index, parsed)
+    
 def parse_0300010(bill,line_index,parsed):
-    # def tokens = line[7..-1].tokenize()
-    # if (tokens.size() > 1) { # != TOTAL
-    #     TxtDigester.SectionRecord cargoMesSectionRecord = new TxtDigester.SectionRecord()
-    #     cargoMesSectionRecord.valor = {
-    #         def valor = FormatUtil.currencyToNumberFormatter(tokens.pop())
-    #         def currency = tokens[-1]
-    #         if (currency == 'Q-') {
-    #             valor = "-${valor}"
-    #         }
-    #         return valor
-    #     }.call()
-    #     if (tokens[-1] == 'Q' || tokens[-1] == 'Q-') {
-    #         tokens.pop() # Remoe last token
-    #     }
-    #     cargoMesSectionRecord.nombre = tokens.join(' ')
-    #     sectionRecord.financiamientos << cargoMesSectionRecord
-    # } else { # == TOTAL
-    #     TxtDigester.SectionRecord cargoMesSectionRecord = new TxtDigester.SectionRecord()
-    #     cargoMesSectionRecord.nombre = tokens.join(' ')
-    #     sectionRecord.financiamientos << cargoMesSectionRecord
-    # }
-    undefined_line(line_index, parsed)
+    tokens = parsed.predicate.split()
+    
 def parse_0300100(bill,line_index,parsed): # PRODUCTOS Y SERVICIOS
     # sectionRecord.productosServicios = []
     undefined_line(line_index, parsed)
+    
 def parse_0300110(bill,line_index,parsed):
-    # def tokens = line[7..-1].tokenize()
-    # def text = []
-    # # TODO: if 'VER DETALLE' changes it won't work
-    # if (line.endsWith('VER DETALLE')) {
-    #     text << tokens.pop() # remove last element
-    #     text << tokens.pop() # remove last element
-    # }
-    # TxtDigester.SectionRecord cargoMesSectionRecord = new TxtDigester.SectionRecord()
-    # if (!text.isEmpty()) {
-    #     cargoMesSectionRecord.periodo = text.reverse().join(' ')
-    # }
-    # if (tokens.join(' ') ==~ /.*Q\s+\d*,?\d+\.\d{2}$/) { # Sample: Q         2,612.15
-    #     cargoMesSectionRecord.valor = {
-    #         def valor = FormatUtil.currencyToNumberFormatter(tokens.pop())
-    #         def currency = tokens.pop()
-    #         if (currency == 'Q-') {
-    #             valor = "-${valor}"
-    #         }
-    #         return valor
-    #     }.call()
-    #     cargoMesSectionRecord.nombre = tokens.join(' ')
-    #     sectionRecord.productosServicios << cargoMesSectionRecord
-    # } else {
-    #     cargoMesSectionRecord.periodo = 'N'
-    #     cargoMesSectionRecord.valor = '0'
-    #     cargoMesSectionRecord.nombre = tokens.join(' ')
-    #     sectionRecord.productosServicios << cargoMesSectionRecord
-    # }
-    undefined_line(line_index, parsed)
+    
+    tokens = split_predicate(line_index, parsed, bill, 7)
+    
 def parse_0300150(bill,line_index,parsed):
-    # def tokens = line[7..-1].tokenize()
-    # sectionRecord.totalFactura = {
-    #     def valor = FormatUtil.currencyToNumberFormatter(tokens.pop())
-    #     def currency = tokens.pop()
-    #     if (currency == 'Q-') {
-    #         valor = "-${valor}"
-    #     }
-    #     return valor
-    # }.call()
-    undefined_line(line_index, parsed)
-def parse_0300200(bill,line_index,parsed):
-    # sectionRecord.aviso = line[7..-1].trim()
-    undefined_line(line_index, parsed)
+    tokens = split_predicate(line_index, parsed, bill, 5)
+    
+parse_0302000 = partial(generic_predicate, field_name="aviso")
+
 def parse_0300300(bill,line_index,parsed):
-    # def tokens = line[7..-1].tokenize()
-    # sectionRecord.totalPagar = {
-    #     def valor = FormatUtil.currencyToNumberFormatter(tokens.pop())
-    #     def currency = tokens.pop()
-    #     if (currency == 'Q-') {
-    #         valor = "-${valor}".toString()
-    #     }
-    #     return valor
-    # }.call()
-    undefined_line(line_index, parsed)
-def parse_0400100(bill,line_index,parsed):
-    # if (sectionRecord.containsKey('notificaciones')) { # List already exists?
-    #     sectionRecord.notificaciones << line[7..-1] # Add item to list
-    # } else {
-    #     sectionRecord.notificaciones = [line[7..-1]] # New List with initial element
-    # }
-    undefined_line(line_index, parsed)
+    tokens = split_predicate(line_index, parsed, bill, 5)
+    
+parse_0401000 = partial(generic_predicate, field_name="notificaciones")    
+# def parse_0400100(bill,line_index,parsed):
+#     undefined_line(line_index, parsed)
 
 #
 
+parse_0402000 = partial(generic_predicate, field_name="serieAdministrativa") 
+# def parse_0400200(bill, line_index, parsed):
+#     undefined_line(line_index, parsed)
 
-def parse_0400200(bill, line_index, parsed):
-    undefined_line(line_index, parsed)
-#     # sectionRecord.id = id
-#     # # --
-#     # def tokens = line[7..-1].tokenize()
-#     # sectionRecord.serieAdministrativa = tokens[-1]
-#     # break
-def parse_0400300(bill, line_index, parsed):
-    undefined_line(line_index, parsed)
-#     # def tokens = line[7..-1].tokenize()
-#     # while (tokens[-1] ==~ /[A-Za-z]+/) {
-#     #     tokens.pop()
-#     # }
-#     # sectionRecord.numeroAdministrativo = tokens.pop()
-#     # break
+parse_0403000 = partial(generic_predicate, field_name="numeroAdministrativo") 
+# def parse_0400300(bill, line_index, parsed):
+#     undefined_line(line_index, parsed)
+
 def parse_0400400(bill, line_index, parsed):
-    undefined_line(line_index, parsed)
-    # def tokens = line[7..-1].tokenize()
-    # sectionRecord.numeroAutorizacion = tokens[-1]
-    # if (sectionRecord.numeroAutorizacion == 'AUTORIZACION:') {
-    #     sectionRecord.numeroAutorizacion = ' '
-    # }
-    # break
+    tokens = split_predicate(line_index,parsed,bill,4)
+        
 def parse_0400410(bill, line_index, parsed):
-    undefined_line(line_index, parsed)
-    # sectionRecord.facturaSerie = line[21..50].trim()
-    # if (sectionRecord.facturaSerie.isEmpty()) {
-    #     sectionRecord.facturaSerie = ' '
-    # }
-    # sectionRecord.clienteNombre = line[51..-1]
-    # break
+    bill.factura_serie = parsed.predicate[21-7:51-7].strip()
+    
 def parse_0400500(bill, line_index, parsed):
-    undefined_line(line_index, parsed)
-    # def tokens = line[7..-1].tokenize()
-    # sectionRecord.telefono = tokens.pop()
-    # break
+    tokens = split_predicate(line_index,parsed,bill,2)
+
 def parse_0400600(bill, line_index, parsed):
-    undefined_line(line_index, parsed)
-    # def tokens = line[7..-1].tokenize()
-    # sectionRecord.mesFacturacion = tokens.pop()
-    # break
+    tokens = split_predicate(line_index,parsed,bill,5)
+    # bill.mesFacturacion = tokens.pop()
+    
 def parse_0400700(bill, line_index, parsed):
-    undefined_line(line_index, parsed)
-#     def tokens = line[7..-1].tokenize()
-# # sectionRecord.totalMes = FormatUtil.currencyToNumberFormatter(tokens.pop())
-# # 20230110 - Jasiel - Cambio para tomar valores negativos
-# sectionRecord.totalMes = {
-#     def valor = FormatUtil.currencyToNumberFormatter(tokens.pop())
-#     def currency = tokens.pop()
-#     if (currency == 'Q-') {
-#         valor = "-${valor}"
-#     }
-#     return valor
-# }.call()
-# break
+    tokens = split_predicate(line_index, parsed, bill, 5)
+    
 def parse_0400800(bill, line_index, parsed):
-    undefined_line(line_index, parsed)
-#     def tokens = line[7..-1].tokenize()
-#     #sectionRecord.totalPagar = FormatUtil.currencyToNumberFormatter(tokens.pop())
-#     # 20230110 - Jasiel - Cambio para tomar valores negativos
-# sectionRecord.totalPagar = {
-#     def valor = FormatUtil.currencyToNumberFormatter(tokens.pop())
-#     def currency = tokens.pop()
-#     if (currency == 'Q-') {
-#         valor = "-${valor}"
-#     }
-#     return valor
-# }.call()
-# break
+    tokens = split_predicate(line_index, parsed, bill, 5)
+    
 def parse_0401000(bill, line_index, parsed):
-    undefined_line(line_index, parsed)
-    # def tokens = line[7..-1].tokenize()
-    # sectionRecord.vencimiento = tokens.pop()
-    # break
+    tokens = split_predicate(line_index, parsed, bill, 2)
+    
 def parse_0401098(bill, line_index, parsed):
-    undefined_line(line_index, parsed)
-    # def tokens = line[7..-1].tokenize()
-    # sectionRecord.certificadorNIT = tokens.pop().tokenize(':').pop()
-    # tokens.remove(0)
-    # sectionRecord.certificador = tokens.join(' ')
-    # break
+    tokens = split_predicate(line_index, parsed, bill, 4)
+    
 def parse_0401099(bill, line_index, parsed):
-    undefined_line(line_index, parsed)
-    # def tokens = line[7..-1].tokenize()
-    # sectionRecord.numeroAdministrativo = tokens.pop()
-    # if (sectionRecord.numeroAdministrativo == 'ADMINISTRATIVO:') {
-    #     sectionRecord.numeroAdministrativo = ' '
-    # }
-    # break
+    tokens = split_predicate(line_index, parsed, bill, 3)
+    
 def parse_0401100(bill, line_index, parsed):
+    tokens = split_predicate(line_index, parsed, bill, 3)
+
+def parse_0700100(bill, line_index, parsed):
+    bill._07_id = parsed.section_index
+    
+def parse_0800100(bill, line_index, parsed):
+    undefined_line(line_index,parsed)
+    
+def parse_0900100(bill, line_index, parsed):
+    tokens = split_predicate(line_index, parsed, bill, 2)
+    
+def parse_0900200(bill, line_index, parsed):
+    tokens = split_predicate(line_index, parsed, bill, 15)
+    # bill._0900200_tokens = tokens
+
+def parse_0900300(bill, line_index, parsed):
+    # min_len = bill._0900200_tokens
+    tokens = split_predicate(line_index, parsed, bill, 15)    
+
+def parse_0900400(bill, line_index, parsed):
+    tokens = split_predicate(line_index, parsed, bill, 8)  
+
+def parse_0900500(bill, line_index, parsed):
+    tokens = split_predicate(line_index, parsed, bill, 7)
+    
+def parse_1100100(bill, line_index, parsed):
+    tokens = split_predicate(line_index, parsed, bill, 3)
+
+def parse_1100200(bill, line_index, parsed):
+    # tokens = parsed.predicate.split()
+    tokens = split_predicate(line_index, parsed, bill, 12)
+    
+def parse_1100300(bill, line_index, parsed):
     undefined_line(line_index, parsed)
-    # def tokens = line[7..-1].tokenize()
-    # sectionRecord.serieAdministrativa = tokens.pop()
-    # if (sectionRecord.serieAdministrativa == 'ADMINISTRATIVA:') {
-    #     sectionRecord.serieAdministrativa = ' '
-    # }
-    # break
+    
+def parse_1100400(bill, line_index, parsed):
+    undefined_line(line_index,parsed)
+
+    
+# def parse_11_00300(bill, line_index, parsed):
+#     undefined_line(line_index, parsed)
+
+# def parse_09_11_00400(bill, line_index, parsed):
+#     undefined_line(line_index, parsed)
+    
+# def parse_09_11_00500(bill, line_index, parsed):
+#     undefined_line(line_index, parsed)
+    
+def parse_1201100(bill, line_index, parsed):
+    undefined_line(line_index, parsed)
+    
+def parse_1201200(bill, line_index, parsed):
+    undefined_line(line_index, parsed)
+    
+def parse_1201300(bill, line_index, parsed):
+    undefined_line(line_index, parsed)
+    
+def parse_1201400(bill, line_index, parsed):
+    undefined_line(line_index, parsed)
+    
+def parse_1300100(bill, line_index, parsed):
+    undefined_line(line_index, parsed)
+    
+def parse_1300200(bill, line_index, parsed):
+    undefined_line(line_index, parsed)
+    
+def parse_1300300(bill, line_index, parsed):
+    undefined_line(line_index, parsed)
+    
+def parse_1300400(bill, line_index, parsed):
+    undefined_line(line_index, parsed)
