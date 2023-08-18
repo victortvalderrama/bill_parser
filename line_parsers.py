@@ -1,3 +1,4 @@
+from datetime import datetime
 from functools import partial
 from collections import namedtuple
 from models import LineError, SECTION_NAME_MAP
@@ -74,10 +75,16 @@ parse_0101100 = partial(generic_predicate, field_name="receptor_dir_l2")
 
 def parse_0101200(bill, line_index, parsed):
     line = parsed.predicate
-    bill.receptorDirL3 = line[0:39].strip()
-    bill.receptorNIT = line[44:65].strip()
-    bill.servicio = line[72:].strip()
-    
+    line_list= [
+        line[:45-7].strip(),
+        line[51-7:71-7].strip(),
+        line[73-7:-1].strip(),
+    ]
+    for item in line_list:
+        # print(item)
+        if len(item.strip()) == 0:
+            append_line_error(bill,parsed,line_index, "missing values in parsed file")
+
 parse_0101300 = partial(generic_predicate, field_name="limite")
 
 def parse_0101400(bill, line_index, parsed):
@@ -93,23 +100,19 @@ parse_0101700 = partial(generic_predicate, field_name="eMails")
 
 
 # SECTION 020000
-
-
 def parse_0200000(bill,line_index,parsed):
-    # undefined_line(line_index, parsed)
-    bill._02_id = parsed.section_index
+    undefined_line(line_index, parsed)
         
 def parse_0200100(bill,line_index,parsed):
-    # 0200100POR VENTA DE SERVICIO TELEFONICO AL:  10/FEB/2021
-    # undefined_line(line_index, parsed)
     tokens = parsed.predicate.split()
-    bill.periodoFacturado = tokens[-1]
+    token = tokens[-1]
+    try:
+        datetime.strptime(token, '%d/%b/%Y')
+    except ValueError:
+        error_msg = "missing billed period"
+        append_line_error(bill, parsed, line_index, error_msg)
         
 parse_0200200 = partial(generic_predicate, field_name="concepto_cobro")
-# def parse_0200200(bill,line_index,parsed):
-#     # 0200200RESUMEN CONCEPTO DE COBRO
-#     #bill.conceptosCobro = [] # new List
-#     undefined_line(line_index, parsed)
         
 def parse_0200300(bill,line_index,parsed): # SALDO ANTERIORm
     tokens = split_predicate(line_index,parsed,bill,5)

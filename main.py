@@ -6,8 +6,8 @@ import pprint
 
 def get_parameters():
     params = {
-        "filename": "ClaroGT/ClaroGT_TelefoniaFija/TelefoniaFija/20230502123330_CLAROGTFIJA_GFTX230311_ver01.txt.err"
-        # 'filename': "/home/vakord/Work/bill_parser/PROCESSED_20230502123330_CLAROGTFIJA_GFTX230311_ver01.txt"
+        # "filename": "ClaroGT/ClaroGT_TelefoniaFija/TelefoniaFija/20230502123330_CLAROGTFIJA_GFTX230311_ver01.txt.err"
+        'filename': "/home/vakord/Work/bill_parser/PROCESSED_20230502123330_CLAROGTFIJA_GFTX230311_ver01.txt"
     }
     return params
 
@@ -78,8 +78,8 @@ def main():
     print_errors(bills)
     # print_bill_ranges(bills)
 
-    # bad_lines = get_bad_lines(bills)
-    # purge_bad_lines(filename, bad_lines)
+    bad_lines = get_bad_lines(bills)
+    purge_bad_lines(filename, bad_lines)
 
 
 if __name__ == '__main__':

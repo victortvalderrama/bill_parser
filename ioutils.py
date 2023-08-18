@@ -1,5 +1,6 @@
 from constants import BAD_SUFFIXES
 from pathlib import Path
+from models import PathData
 
 def file_stream_reader(filename):
     with open(filename, "r") as fp:

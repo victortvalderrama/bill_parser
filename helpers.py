@@ -1,6 +1,6 @@
 from functools import partial
 from collections import namedtuple
-from models import LineError, PathData, SECTION_NAME_MAP
+from models import LineError, SECTION_NAME_MAP
 import re
 
 def validate_tokens(tokens, expected_patterns):
