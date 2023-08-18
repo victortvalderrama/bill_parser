@@ -1,7 +1,8 @@
 from functools import partial
 from collections import namedtuple
 from models import LineError, SECTION_NAME_MAP
-from ioutils import *
+from ioutils import file_stream_reader
+from helpers import *
 import re
 
 # SECTION 010000
@@ -65,9 +66,8 @@ def parse_0100800(bill, line_index, parsed):
 parse_0100900 = partial(generic_predicate, field_name="receptor_nombre")
 
 def parse_0101000(bill, line_index, parsed):
-    # undefined_line(line_index, parsed)
-    bill.receptorDirL1 = parsed.predicate[0:47].strip()
-    bill.receptorTelefono = parsed.predicate[47:57].strip()
+    starting_index = parsed.predicate[:56].strip()
+    
         
 parse_0101100 = partial(generic_predicate, field_name="receptor_dir_l2")
 
