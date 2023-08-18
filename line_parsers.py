@@ -66,8 +66,9 @@ def parse_0100800(bill, line_index, parsed):
 parse_0100900 = partial(generic_predicate, field_name="receptor_nombre")
 
 def parse_0101000(bill, line_index, parsed):
-    starting_index = parsed.predicate[:56].strip()
-    
+    tokens = parsed.predicate[63-7:].split()
+    if len(tokens) != 5:
+        append_line_error(bill, parsed, line_index, "there is not the required length for tokens")
         
 parse_0101100 = partial(generic_predicate, field_name="receptor_dir_l2")
 
