@@ -1,8 +1,11 @@
 
 from functools import partial
 from collections import namedtuple
-from models import LineError, SECTION_NAME_MAP
+from models import LineError, PathData, SECTION_NAME_MAP
+from constants import BAD_SUFFIXES
+from pathlib import Path
 import re
+
 
 def validate_tokens(tokens, expected_patterns):
     errors = []
@@ -33,7 +36,24 @@ def file_stream_reader(filename):
         while line:
             yield line.rstrip()
             line = fp.readline()
-            
+
+
+def get_path_data(filename):    
+    p = Path(filename)
+    if len(p.suffixes) > 1:
+        suffix = set(p.suffixes) - set(BAD_SUFFIXES)
+        if len(suffix) == 1:
+            suffix = list(suffix)[0]
+        else:
+            suffix = p.suffix
+    else:
+        suffix = p.suffix
+    
+    name = p.name.replace("".join(p.suffixes), "")
+    return PathData(name=name, suffix=suffix)
+
+
+
 def generic_predicate(bill, line_index, parsed, field_name):
     value = parsed.predicate.strip() + f"#{line_index}"
     setattr(bill, field_name, value)

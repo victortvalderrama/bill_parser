@@ -68,28 +68,6 @@ def parse_0101000(bill, line_index, parsed):
     # undefined_line(line_index, parsed)
     bill.receptorDirL1 = parsed.predicate[0:47].strip()
     bill.receptorTelefono = parsed.predicate[47:57].strip()
-
-    data_total_pagar = parsed.predicate[57:78].strip()
-    if data_total_pagar.startswith('Q-'):
-        bill.totalPagar = "-" + data_total_pagar.split()[1]
-    else:
-        bill.totalPagar = data_total_pagar.split()[1]
-
-    if len(parsed.predicate) == 89:
-        bill.fechaVencimiento = parsed.predicate[78:89].strip()
-    elif len(parsed.predicate) >= 88:
-        bill.fechaVencimiento = parsed.predicate[78:90].strip()
-    else:
-        bill.fechaVencimiento = '01/ENE/1970'
-
-    if len(parsed.predicate) >= 113:
-        data_ajuste = parsed.predicate[95:].strip()
-        if data_ajuste.startswith('Q-'):
-            bill.ajuste = "-" + data_ajuste.split()[1]
-        else:
-            bill.ajuste = data_ajuste.split()[1]
-    else:
-        bill.ajuste = '0.00'
         
 parse_0101100 = partial(generic_predicate, field_name="receptor_dir_l2")
 

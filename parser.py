@@ -11,6 +11,7 @@ from constants import (
 )
 from models import Bill, Line
 import line_parsers
+from models import LineError, SECTION_NAME_MAP
 
 def tokenize(line):
     section_index = line[HEAD_SLICE]
@@ -29,32 +30,41 @@ def load_line(bill, line_index, parsed):
     
     # Guard class in case of missing section
     if func is None:
+        # error = LineError(
+        #     line_section_index=line_index,
+        #     section_name=SECTION_NAME_MAP.get(parsed.section_index, "Unknown"),
+        #     predicate="Missing",
+        #     line_index=line_index,
+        #     error="Section not found"
+        # )
+        # bill.errors.append(error)
+        # bill.processed_lines.append(parsed.section_index)
+        # return  
         # raise KeyError(f"Line code { parsed.section_index} is missing from line parsers ")
         # return
         bill.processed_lines.append(parsed.section_index)
         return
-
     func(bill, line_index, parsed)
     bill.processed_lines.append(parsed.section_index)
 
 
 def parse(iterable):
     bills = []
-    bill = Bill(starting_line_human=1, start_line_real=0)
+    bill = Bill(start_line=0)
     
     prev_section = 1
 
     for index, line in enumerate(iterable):
-        line_index = index + 1
+        line_index = index
         parsed = tokenize(line)
         curr_section = int(parsed.section)
         
         if curr_section == 50 or curr_section < prev_section:
 
             load_line(bill, line_index, parsed)
-            bill.ending_line=index
+            bill.end_line= index
             bills.append(bill)
-            bill = Bill(starting_line_human=index + 2, start_line_real=index + 1)
+            bill = Bill(start_line=index + 1)
             prev_section = 1
             continue
         
@@ -62,5 +72,6 @@ def parse(iterable):
         prev_section = int(parsed.section)
         
     if curr_section != 50: # stray bill
+        bill.end_line = index + 1
         bills.append(bill)
     return bills
