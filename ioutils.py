@@ -3,7 +3,7 @@ from pathlib import Path
 from models import PathData
 
 def file_stream_reader(filename):
-    with open(filename, "r") as fp:
+    with open(filename, "r", encoding="ISO-8859-1") as fp:
         line = fp.readline()
         while line:
             yield line.rstrip()

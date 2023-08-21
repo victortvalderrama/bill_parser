@@ -76,7 +76,7 @@ parse_0101100 = partial(generic_predicate, field_name="receptor_dir_l2")
 def parse_0101200(bill, line_index, parsed):
     line = parsed.predicate
     line_list= [
-        line[:45-7].strip(),
+        # line[:45-7].strip(),
         line[51-7:71-7].strip(),
         line[73-7:-1].strip(),
     ]
@@ -93,8 +93,7 @@ def parse_0101400(bill, line_index, parsed):
 parse_0101500 = partial(generic_predicate, field_name="mensaje")
 
 def parse_0101600(bill, line_index, parsed):
-    line = parsed.predicate
-    bill.mensaje += line[33:].strip()
+    line = parsed.predicate[33:].strip()
 
 parse_0101700 = partial(generic_predicate, field_name="eMails")
 
@@ -116,20 +115,21 @@ parse_0200200 = partial(generic_predicate, field_name="concepto_cobro")
         
 def parse_0200300(bill,line_index,parsed): # SALDO ANTERIORm
     tokens = split_predicate(line_index,parsed,bill,5)
-    
+    if len(tokens) != 5:
+        append_line_error(bill, parsed, line_index, "length of tokens are not 5")
         
 def parse_0200400(bill,line_index,parsed): # SU PAGO GRACIAS
     tokens = split_predicate(line_index,parsed,bill,5)
+    if len(tokens) != 5:
+        append_line_error(bill, parsed, line_index, "length of tokens are not 5")
     
-        
 def parse_0200500(bill,line_index,parsed): # SALDO INICIAL
     tokens = split_predicate(line_index, parsed, bill, 5)
-    
+    if len(tokens) != 5:
+        append_line_error(bill, parsed, line_index, "length of tokens are not 5")
         
 def parse_0200600(bill,line_index,parsed): # CARGOS DEL MES
     tokens = split_predicate(line_index, parsed, bill, 3)
-    bill. cobro_section_nombre = " ".join(tokens)
-    # bill.conceptosCobro << conceptoCobrobill
         
 def parse_0200700(bill,line_index,parsed): # FINANCIAMIENTO
     tokens = split_predicate(line_index, parsed, bill, 5)
@@ -145,10 +145,10 @@ def parse_0300000(bill,line_index,parsed): # FINANCIAMIENTOS
     undefined_line(line_index, parsed)
     
 def parse_0300010(bill,line_index,parsed):
-    tokens = parsed.predicate.split()
+    undefined_line(line_index, parsed)
+    # tokens = split_predicate(line_index, parsed, bill, 5)
     
 def parse_0300100(bill,line_index,parsed): # PRODUCTOS Y SERVICIOS
-    # sectionRecord.productosServicios = []
     undefined_line(line_index, parsed)
     
 def parse_0300110(bill,line_index,parsed):
@@ -277,3 +277,7 @@ def parse_1300300(bill, line_index, parsed):
     
 def parse_1300400(bill, line_index, parsed):
     undefined_line(line_index, parsed)
+    
+    
+def parse_1400100(bill, line_index, parsed):
+    undefined_line(line_index,parsed)

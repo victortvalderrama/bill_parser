@@ -7,7 +7,10 @@ import pprint
 def get_parameters():
     params = {
         # "filename": "ClaroGT/ClaroGT_TelefoniaFija/TelefoniaFija/20230502123330_CLAROGTFIJA_GFTX230311_ver01.txt.err"
-        'filename': "/home/vakord/Work/bill_parser/PROCESSED_20230502123330_CLAROGTFIJA_GFTX230311_ver01.txt"
+        # 'filename': "/home/vakord/Work/bill_parser/PROCESSED_20230502123330_CLAROGTFIJA_GFTX230311_ver01.txt"
+        
+        # 'filename': "ClaroGT/ClaroGT_TelefoniaFija/20230818141153_CLAROGTFIJA_GFTX230802.txt"
+        'filename': "ClaroGT/ClaroGT_TelefoniaFija/20230818141153_CLAROGTFIJA_GFTX230802_ver02.txt"    
     }
     return params
 
@@ -19,24 +22,28 @@ def get_bad_lines(bills):
     for bad_range in bad_bill_ranges:
         bad_range = list(bad_range)
         bad_lines.extend(bad_range)
-    
+    # print(bad_lines)
     return bad_lines
-
 
 def purge_bad_lines(filename, bad_lines):
     path = get_path_data(filename)
-    target = f"PROCESSED_{path.name}{path.suffix}"
+    target_good = f"PROCESSED_GOOD_{path.name}{path.suffix}"
+    target_bad = f"PROCESSED_BAD_{path.name}{path.suffix}"
     
-    original = open(filename, "r")
-    processed = open(target, "w")
+    original = open(filename, "r", encoding="ISO-8859-1")
+    processed_good = open(target_good, "w", encoding="ISO-8859-1")
+    processed_bad = open(target_bad, "w", encoding="ISO-8859-1")
 
     for index, line in enumerate(original):
+        line = f"{line}"
         if index not in bad_lines:
-            line = f"{line}"
-            processed.write(line)
+            processed_good.write(line)
+        else:
+            processed_bad.write(line)
         
     original.close()
-    processed.close()
+    processed_good.close()
+    processed_bad.close()
     return
 
 
