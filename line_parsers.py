@@ -68,7 +68,8 @@ parse_0100900 = partial(generic_predicate, field_name="receptor_nombre")
 
 def parse_0101000(bill, line_index, parsed):
     tokens = parsed.predicate[63-7:].split()
-    if len(tokens) != 5:
+    # print(" tokens of 0101000 ",len(tokens))
+    if len(tokens) > 6:
         append_line_error(bill, parsed, line_index, "there is not the required length for tokens")
         
 parse_0101100 = partial(generic_predicate, field_name="receptor_dir_l2")
@@ -92,11 +93,9 @@ def parse_0101400(bill, line_index, parsed):
 
 parse_0101500 = partial(generic_predicate, field_name="mensaje")
 
-def parse_0101600(bill, line_index, parsed):
-    line = parsed.predicate[33:].strip()
+parse_0101600 = partial(generic_predicate, field_name="mensaje2")
 
 parse_0101700 = partial(generic_predicate, field_name="eMails")
-
 
 # SECTION 020000
 def parse_0200000(bill,line_index,parsed):
@@ -128,8 +127,7 @@ def parse_0200500(bill,line_index,parsed): # SALDO INICIAL
     if len(tokens) != 5:
         append_line_error(bill, parsed, line_index, "length of tokens are not 5")
         
-def parse_0200600(bill,line_index,parsed): # CARGOS DEL MES
-    tokens = split_predicate(line_index, parsed, bill, 3)
+parse_0200600 = partial(generic_predicate, field_name="cargos_del_mes")
         
 def parse_0200700(bill,line_index,parsed): # FINANCIAMIENTO
     tokens = split_predicate(line_index, parsed, bill, 5)
@@ -140,54 +138,59 @@ def parse_0200800(bill,line_index,parsed): # SALDO INICIAL + FINANCIAMIENTO
    
     
 # SECTION 030000
-
+# parse_0300000 = partial(generic_predicate, field_name="productos_y_servicios")
 def parse_0300000(bill,line_index,parsed): # FINANCIAMIENTOS
     undefined_line(line_index, parsed)
     
 def parse_0300010(bill,line_index,parsed):
     undefined_line(line_index, parsed)
     # tokens = split_predicate(line_index, parsed, bill, 5)
-    
+  
+# parse_0300100 = partial(generic_predicate, field_name="productos_y_servicios")  
 def parse_0300100(bill,line_index,parsed): # PRODUCTOS Y SERVICIOS
     undefined_line(line_index, parsed)
     
 def parse_0300110(bill,line_index,parsed):
-    
-    tokens = split_predicate(line_index, parsed, bill, 7)
+    tokens = parsed.predicate[63-7:].split()
+    if len(tokens) > 4:
+        append_line_error(bill, parsed, line_index, "length of tokens are not 4")
     
 def parse_0300150(bill,line_index,parsed):
-    tokens = split_predicate(line_index, parsed, bill, 5)
+    tokens = parsed.predicate[57-7:].split()
+    # print(tokens)
+    if len(tokens) != 2:
+        append_line_error(bill, parsed, line_index, "length of tokens are not 2")
     
 parse_0302000 = partial(generic_predicate, field_name="aviso")
 
 def parse_0300300(bill,line_index,parsed):
-    tokens = split_predicate(line_index, parsed, bill, 5)
+    tokens = parsed.predicate[57-7:].split()
+    if len(tokens) != 2:
+        append_line_error(bill, parsed, line_index, "length of tokens are not 2")
     
 parse_0401000 = partial(generic_predicate, field_name="notificaciones")    
 # def parse_0400100(bill,line_index,parsed):
 #     undefined_line(line_index, parsed)
 
-#
+def parse_0400200(bill, line_index, parsed):
+    undefined_line(line_index, parsed)
 
-parse_0402000 = partial(generic_predicate, field_name="serieAdministrativa") 
-# def parse_0400200(bill, line_index, parsed):
-#     undefined_line(line_index, parsed)
-
-parse_0403000 = partial(generic_predicate, field_name="numeroAdministrativo") 
-# def parse_0400300(bill, line_index, parsed):
-#     undefined_line(line_index, parsed)
+def parse_0400300(bill, line_index, parsed):
+    undefined_line(line_index, parsed)
 
 def parse_0400400(bill, line_index, parsed):
     tokens = split_predicate(line_index,parsed,bill,4)
+    if len(tokens) < 3:
+        append_line_error(bill,parsed,line_index, "no authorization logic")
         
 def parse_0400410(bill, line_index, parsed):
-    bill.factura_serie = parsed.predicate[21-7:51-7].strip()
+    undefined_line(line_index, parsed)
     
 def parse_0400500(bill, line_index, parsed):
     tokens = split_predicate(line_index,parsed,bill,2)
 
 def parse_0400600(bill, line_index, parsed):
-    tokens = split_predicate(line_index,parsed,bill,5)
+    tokens = split_predicate(line_index,parsed,bill,4)
     # bill.mesFacturacion = tokens.pop()
     
 def parse_0400700(bill, line_index, parsed):
@@ -209,20 +212,20 @@ def parse_0401100(bill, line_index, parsed):
     tokens = split_predicate(line_index, parsed, bill, 3)
 
 def parse_0700100(bill, line_index, parsed):
-    bill._07_id = parsed.section_index
+    undefined_line(line_index, parsed)
     
 def parse_0800100(bill, line_index, parsed):
-    undefined_line(line_index,parsed)
+    tokens = split_predicate(line_index, parsed, bill, 1)
     
 def parse_0900100(bill, line_index, parsed):
     tokens = split_predicate(line_index, parsed, bill, 2)
     
 def parse_0900200(bill, line_index, parsed):
-    tokens = split_predicate(line_index, parsed, bill, 15)
-    # bill._0900200_tokens = tokens
+    tokens = parsed.predicate.split()
+    if len(tokens) != 15:
+        append_line_error(bill,parsed,line_index,"length of tokens are not 15")
 
 def parse_0900300(bill, line_index, parsed):
-    # min_len = bill._0900200_tokens
     tokens = split_predicate(line_index, parsed, bill, 15)    
 
 def parse_0900400(bill, line_index, parsed):
@@ -235,24 +238,16 @@ def parse_1100100(bill, line_index, parsed):
     tokens = split_predicate(line_index, parsed, bill, 3)
 
 def parse_1100200(bill, line_index, parsed):
-    # tokens = parsed.predicate.split()
     tokens = split_predicate(line_index, parsed, bill, 12)
     
 def parse_1100300(bill, line_index, parsed):
-    undefined_line(line_index, parsed)
+    tokens = split_predicate(line_index, parsed, bill, 14)
     
 def parse_1100400(bill, line_index, parsed):
-    undefined_line(line_index,parsed)
-
+    tokens = split_predicate(line_index, parsed, bill, 10)
     
-# def parse_11_00300(bill, line_index, parsed):
-#     undefined_line(line_index, parsed)
-
-# def parse_09_11_00400(bill, line_index, parsed):
-#     undefined_line(line_index, parsed)
-    
-# def parse_09_11_00500(bill, line_index, parsed):
-#     undefined_line(line_index, parsed)
+def parse_1100500(bill, line_index, parsed):
+    undefined_line(line_index, parsed)
     
 def parse_1201100(bill, line_index, parsed):
     undefined_line(line_index, parsed)
@@ -267,17 +262,148 @@ def parse_1201400(bill, line_index, parsed):
     undefined_line(line_index, parsed)
     
 def parse_1300100(bill, line_index, parsed):
-    undefined_line(line_index, parsed)
+    tokens = split_predicate(line_index, parsed, bill, 2)
     
 def parse_1300200(bill, line_index, parsed):
-    undefined_line(line_index, parsed)
+    tokens = split_predicate(line_index, parsed, bill, 8)
     
 def parse_1300300(bill, line_index, parsed):
     undefined_line(line_index, parsed)
+    # tokens = split_predicate(line_index, parsed, bill, 9)
+    # print(len(tokens))
     
-def parse_1300400(bill, line_index, parsed):
+parse_1300400 = partial(generic_predicate, field_name="total_otros_servicios")
+# def parse_1300400(bill, line_index, parsed):
+#     undefined_line(line_index, parsed)
+    
+parse_1400100 = partial(generic_predicate, field_name="resumen_integrados")
+
+def parse_1400200(bill, line_index, parsed):
+    tokens = split_predicate(line_index, parsed, bill, 12)
+
+def parse_1400300(bill, line_index, parsed):
+    tokens = parsed.predicate.split()
+    if len(tokens) != 10:
+        append_line_error(bill,parsed,line_index,"invalid token size")
+        
+
+def parse_1400500(bill, line_index, parsed):
+    tokens = parsed.predicate.split()
+    if len(tokens) != 10:
+        append_line_error(bill,parsed,line_index,"invalid token size")
+
+def parse_1400600(bill, line_index, parsed):
+    tokens = parsed.predicate.split()
+    if len(tokens) != 4:
+        append_line_error(bill,parsed,line_index,"invalid token size")
+        
+parse_1401100 = partial(generic_predicate, field_name="detalle_cargos_id")
+
+parse_1401200 = partial(generic_predicate, field_name="detalle_cargos_nombre")
+
+parse_1401210 = partial(generic_predicate, field_name="detalle_cargos_subnombre")
+
+def parse_1401300(bill, line_index, parsed):
+    undefined_line(line_index,parsed)
+    
+def parse_1401310(bill, line_index, parsed):
+    undefined_line(line_index,parsed)
+    
+def parse_1401500(bill, line_index, parsed):
+    undefined_line(line_index,parsed)
+
+def parse_1401600(bill, line_index, parsed):
+    undefined_line(line_index,parsed)
+    
+
+# 1800100
+parse_1800100 = partial(generic_predicate, field_name="detalle_enlace_id")
+parse_1800200 = partial(generic_predicate, field_name="detalle_enlace_fecha")
+parse_1800300 = partial(generic_predicate, field_name="detalle_enlace_1800300")
+
+def parse_1800400(bill, line_index, parsed):
+    undefined_line(line_index,parsed)
+    
+def parse_1800410(bill, line_index, parsed):
+    undefined_line(line_index,parsed)
+    
+def parse_1800500(bill, line_index, parsed):
+    undefined_line(line_index,parsed)
+    
+def parse_1800510(bill, line_index, parsed):
+    undefined_line(line_index,parsed)
+    
+def parse_1800600(bill, line_index, parsed):
+    undefined_line(line_index,parsed)
+   
+    
+# 1600100
+
+parse_1600100 = partial(generic_predicate, field_name="detalle_financiamientos_id")
+
+def parse_1600200(bill, line_index, parsed):
+    undefined_line(line_index,parsed)
+    
+def parse_1600300(bill, line_index, parsed):
+    undefined_line(line_index,parsed)
+
+def parse_1600400(bill, line_index, parsed):
+    undefined_line(line_index,parsed)
+    
+def parse_1600500(bill, line_index, parsed):
+    undefined_line(line_index,parsed)
+    
+    
+# 3000000
+
+def parse_3200000(bill,line_indexm,parsed):
     undefined_line(line_index, parsed)
     
+def parse_3200100(bill,line_indexm,parsed):
+    undefined_line(line_index, parsed)
     
-def parse_1400100(bill, line_index, parsed):
-    undefined_line(line_index,parsed)
+def parse_3200210(bill,line_indexm,parsed):
+    undefined_line(line_index, parsed)
+    
+def parse_3200220(bill,line_indexm,parsed):
+    undefined_line(line_index, parsed)
+    
+def parse_3200230(bill,line_indexm,parsed):
+    undefined_line(line_index, parsed)
+    
+def parse_3200240(bill,line_indexm,parsed):
+    undefined_line(line_index, parsed)
+    
+def parse_3200250(bill,line_indexm,parsed):
+    undefined_line(line_index, parsed)
+    
+def parse_3200260(bill,line_indexm,parsed):
+    undefined_line(line_index, parsed)
+    
+def parse_3200300(bill,line_indexm,parsed):
+    undefined_line(line_index, parsed)
+    
+def parse_3200410(bill,line_indexm,parsed):
+    undefined_line(line_index, parsed)
+    
+def parse_3200420(bill,line_indexm,parsed):
+    undefined_line(line_index, parsed)
+    
+def parse_3200430(bill,line_indexm,parsed):
+    undefined_line(line_index, parsed)
+    
+def parse_3200500(bill,line_indexm,parsed):
+    undefined_line(line_index, parsed)
+    
+def parse_3200510(bill,line_indexm,parsed):
+    undefined_line(line_index, parsed)
+    
+def parse_3200600(bill,line_indexm,parsed):
+    undefined_line(line_index, parsed)
+    
+def parse_3200610(bill,line_indexm,parsed):
+    undefined_line(line_index, parsed)
+    
+def parse_3200700(bill,line_indexm,parsed):
+    undefined_line(line_index, parsed)
+    
