@@ -104,11 +104,9 @@ def parse_0200000(bill,line_index,parsed):
 def parse_0200100(bill,line_index,parsed):
     tokens = parsed.predicate.split()
     token = tokens[-1]
-    try:
-        datetime.strptime(token, '%d/%b/%Y')
-    except ValueError:
-        error_msg = "missing billed period"
-        append_line_error(bill, parsed, line_index, error_msg)
+    pattern = r"\d{2}/[A-Z]{3}/\d{4}$"
+    if not re.match(pattern, token):
+        append_line_error(bill, parsed, line_index, "missing billed period")
         
 parse_0200200 = partial(generic_predicate, field_name="concepto_cobro")
         
@@ -134,7 +132,7 @@ def parse_0200700(bill,line_index,parsed): # FINANCIAMIENTO
     
         
 def parse_0200800(bill,line_index,parsed): # SALDO INICIAL + FINANCIAMIENTO
-    tokens = split_predicate(line_index, parsed, bill, 5)
+    tokens = split_predicate(line_index, parsed, bill, 6)
    
     
 # SECTION 030000
@@ -241,7 +239,9 @@ def parse_1100200(bill, line_index, parsed):
     tokens = split_predicate(line_index, parsed, bill, 12)
     
 def parse_1100300(bill, line_index, parsed):
-    tokens = split_predicate(line_index, parsed, bill, 14)
+    tokens = combine_tokens(parsed.predicate)
+    if len(tokens) % 3 != 0:
+        append_line_error(bill, parsed, line_index, "cant divide length of tokens by 3")
     
 def parse_1100400(bill, line_index, parsed):
     tokens = split_predicate(line_index, parsed, bill, 10)
@@ -356,54 +356,54 @@ def parse_1600500(bill, line_index, parsed):
     
 # 3000000
 
-def parse_3200000(bill,line_indexm,parsed):
+def parse_3200000(bill,line_index,parsed):
     undefined_line(line_index, parsed)
     
-def parse_3200100(bill,line_indexm,parsed):
+def parse_3200100(bill,line_index,parsed):
     undefined_line(line_index, parsed)
     
-def parse_3200210(bill,line_indexm,parsed):
+def parse_3200210(bill,line_index,parsed):
     undefined_line(line_index, parsed)
     
-def parse_3200220(bill,line_indexm,parsed):
+def parse_3200220(bill,line_index,parsed):
     undefined_line(line_index, parsed)
     
-def parse_3200230(bill,line_indexm,parsed):
+def parse_3200230(bill,line_index,parsed):
     undefined_line(line_index, parsed)
     
-def parse_3200240(bill,line_indexm,parsed):
+def parse_3200240(bill,line_index,parsed):
     undefined_line(line_index, parsed)
     
-def parse_3200250(bill,line_indexm,parsed):
+def parse_3200250(bill,line_index,parsed):
     undefined_line(line_index, parsed)
     
-def parse_3200260(bill,line_indexm,parsed):
+def parse_3200260(bill,line_index,parsed):
     undefined_line(line_index, parsed)
     
-def parse_3200300(bill,line_indexm,parsed):
+def parse_3200300(bill,line_index,parsed):
     undefined_line(line_index, parsed)
     
-def parse_3200410(bill,line_indexm,parsed):
+def parse_3200410(bill,line_index,parsed):
     undefined_line(line_index, parsed)
     
-def parse_3200420(bill,line_indexm,parsed):
+def parse_3200420(bill,line_index,parsed):
     undefined_line(line_index, parsed)
     
-def parse_3200430(bill,line_indexm,parsed):
+def parse_3200430(bill,line_index,parsed):
     undefined_line(line_index, parsed)
     
-def parse_3200500(bill,line_indexm,parsed):
+def parse_3200500(bill,line_index,parsed):
     undefined_line(line_index, parsed)
     
-def parse_3200510(bill,line_indexm,parsed):
+def parse_3200510(bill,line_index,parsed):
     undefined_line(line_index, parsed)
     
-def parse_3200600(bill,line_indexm,parsed):
+def parse_3200600(bill,line_index,parsed):
     undefined_line(line_index, parsed)
     
-def parse_3200610(bill,line_indexm,parsed):
+def parse_3200610(bill,line_index,parsed):
     undefined_line(line_index, parsed)
     
-def parse_3200700(bill,line_indexm,parsed):
+def parse_3200700(bill,line_index,parsed):
     undefined_line(line_index, parsed)
     

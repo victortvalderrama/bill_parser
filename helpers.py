@@ -41,16 +41,8 @@ def append_line_error(bill, parsed, line_index, error_msg):
     )
     bill.errors.append(error) 
    
-def split_predicate(line_index, parsed, bill, split_len): #, looking_list=None):
+def split_predicate(line_index, parsed, bill, split_len):
     tokens = parsed.predicate.split()
-    
-    # if looking_list:
-    #     tokens = rebuild_searching_list(looking_list, tokens)
-        
-    #     if not validate_tokens(tokens):
-    #         error_msg = "One or more tokens do not match the expected patterns."
-    #         append_line_error(bill, parsed, line_index, error_msg)
-    #         return None
 
     if len(tokens) > split_len:
         error_msg = f"Could not split line in {split_len}"
@@ -59,19 +51,27 @@ def split_predicate(line_index, parsed, bill, split_len): #, looking_list=None):
 
     return tokens
 
-def rebuild_searching_list(looking_list, tokens):
-    rebuilt_tokens = []
-    i = 0
-    while i < len(tokens):
-        found = False
-        for look in looking_list:
-            look_parts = look.split()
-            if tokens[i:i + len(look_parts)] == look_parts:
-                rebuilt_tokens.append(look)
-                i += len(look_parts)
-                found = True
-                break
-        if not found:
-            rebuilt_tokens.append(tokens[i])
-            i += 1
-    return rebuilt_tokens
+def combine_tokens(predicate):
+    tokens = predicate.split()
+
+    patterns = [
+        r"\d{2}/\d{2}",
+        r"\d{2}:\d{2}:\d{2}",
+        r"\d+",
+        r"\d+\.\d+"
+    ]
+    combined_tokens = []
+    current_combined = ""
+    for token in tokens:
+        if any(re.match(pattern, token) for pattern in patterns):
+            if current_combined:
+                combined_tokens.append(current_combined)
+                current_combined = ""
+            combined_tokens.append(token)
+        else:
+            current_combined += " " + token
+
+    if current_combined:
+        combined_tokens.append(current_combined.strip())
+
+    return combined_tokens
