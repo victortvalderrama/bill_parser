@@ -59,10 +59,10 @@ def parse(iterable):
         parsed = tokenize(line)
         curr_section = int(parsed.section)
         
-        if curr_section == 50 or curr_section < prev_section:
+        if curr_section == 50 or (curr_section < prev_section and curr_section != 8):
 
             load_line(bill, line_index, parsed)
-            bill.end_line= index
+            bill.end_line = index
             bills.append(bill)
             bill = Bill(start_line=index + 1)
             prev_section = 1
