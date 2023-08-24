@@ -2,6 +2,7 @@
 
 from ioutils import file_stream_reader
 from collections import namedtuple
+from helpers import append_line_error
 from constants import (
     HEAD_SLICE,
     PREDICATE_SLICE,
@@ -48,7 +49,10 @@ def load_line(bill, line_index, parsed):
     bill.processed_lines.append(parsed.section_index)
 
 
-def parse(iterable):
+def parse(iterable, excluded_sections=None):
+    if excluded_sections is None:
+        excluded_sections = []
+        
     bills = []
     bill = Bill(start_line=0)
     
@@ -59,7 +63,10 @@ def parse(iterable):
         parsed = tokenize(line)
         curr_section = int(parsed.section)
         
-        if curr_section == 50 or (curr_section < prev_section and curr_section != 8):
+        if (
+            (curr_section == 50 or 
+            (curr_section < prev_section and curr_section not in excluded_sections))
+        ):
 
             load_line(bill, line_index, parsed)
             bill.end_line = index

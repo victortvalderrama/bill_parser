@@ -83,6 +83,8 @@ class Bill:
         self.processed_lines = []
         self.start_line = start_line
         self.end_line = -1
+        
+        self.first_0800100_encountered = False
 
     @property
     def missing_sections(self):

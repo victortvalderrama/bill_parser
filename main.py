@@ -10,8 +10,13 @@ def get_parameters():
         # 'filename': "/home/vakord/Work/bill_parser/PROCESSED_20230502123330_CLAROGTFIJA_GFTX230311_ver01.txt"
         
         # 'filename': "ClaroGT/ClaroGT_TelefoniaFija/20230818141153_CLAROGTFIJA_GFTX230802.txt"
-        # 'filename': "ClaroGT/ClaroGT_TelefoniaFija/20230818141153_CLAROGTFIJA_GFTX230802_ver02.txt" 
-        'filename': "ClaroGT/20230818135133_CLAROGTFIJA_GFTX230858_original/20230818135133_CLAROGTFIJA_GFTX230858.txt.err"
+        'filename': "ClaroGT/ClaroGT_TelefoniaFija/20230818141153_CLAROGTFIJA_GFTX230802_ver02.txt" 
+        
+        # 'filename': "ClaroGT/20230818135133_CLAROGTFIJA_GFTX230858_original/20230818135133_CLAROGTFIJA_GFTX230858.txt.err"
+        
+        # 'filename': "ClaroGT/ClaroGT_TFija_20230823_ValidacionSpool/20230822225304_CLAROGTFIJA_GFTX230858_NuevoGO_12000.txt.err"
+        
+        # 'filename': "ClaroGT/ClaroGT_TFija_20230823_ValidacionSpool/20230822233841_CLAROGTFIJA_GFTX230858.txt"
            
     }
     return params
@@ -61,7 +66,8 @@ def print_errors(bills):
         
         if section_error:
             print("\tSection errors found: ")
-            textual_codes = sorted(code_to_textual(bill.missing_sections))
+            textual_codes = code_to_textual(bill.missing_sections)
+            # textual_codes = sorted(code_to_textual(bill.missing_sections))
             print(f"\t\tBill has missing sections:  [{', '.join(textual_codes)}]")
 
         if text_error:
@@ -82,7 +88,8 @@ def main():
     params = get_parameters()
     filename = params["filename"]
     fp = file_stream_reader(filename)
-    bills = parse(fp)
+    # bills = parse(fp, [30])
+    bills = parse(fp, [7,8,30])
 
     print_errors(bills)
     # print_bill_ranges(bills)

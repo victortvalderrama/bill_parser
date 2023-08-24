@@ -75,3 +75,7 @@ def combine_tokens(predicate):
         combined_tokens.append(current_combined.strip())
 
     return combined_tokens
+
+def is_four_digits(token):
+    pattern = r"^\d{4}$"
+    return bool(re.match(pattern, token))

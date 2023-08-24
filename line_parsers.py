@@ -167,11 +167,9 @@ def parse_0300300(bill,line_index,parsed):
         append_line_error(bill, parsed, line_index, "length of tokens are not 2")
     
 parse_0401000 = partial(generic_predicate, field_name="notificaciones")    
-# def parse_0400100(bill,line_index,parsed):
-#     undefined_line(line_index, parsed)
 
 def parse_0400200(bill, line_index, parsed):
-    undefined_line(line_index, parsed)
+    tokens = split_predicate(line_index, parsed, bill, 3)
 
 def parse_0400300(bill, line_index, parsed):
     undefined_line(line_index, parsed)
@@ -181,9 +179,10 @@ def parse_0400400(bill, line_index, parsed):
     if len(tokens) < 3:
         append_line_error(bill,parsed,line_index, "no authorization logic")
         
+# parse_0400410(generic_predicate, field_name="numero_autorizacion")     
 def parse_0400410(bill, line_index, parsed):
     undefined_line(line_index, parsed)
-    
+
 def parse_0400500(bill, line_index, parsed):
     tokens = split_predicate(line_index,parsed,bill,2)
 
@@ -201,7 +200,10 @@ def parse_0401000(bill, line_index, parsed):
     tokens = split_predicate(line_index, parsed, bill, 2)
     
 def parse_0401098(bill, line_index, parsed):
-    tokens = split_predicate(line_index, parsed, bill, 4)
+    pattern = r"NIT:\d{7}-\d"
+    tokens = parsed.predicate.split()
+    if not re.match(pattern, tokens[-1]):
+        append_line_error(bill, parsed, line_index, "incorrect nit pattern")
     
 def parse_0401099(bill, line_index, parsed):
     tokens = split_predicate(line_index, parsed, bill, 3)
@@ -210,10 +212,13 @@ def parse_0401100(bill, line_index, parsed):
     tokens = split_predicate(line_index, parsed, bill, 3)
 
 def parse_0700100(bill, line_index, parsed):
-    undefined_line(line_index, parsed)
+    if bill.first_0800100_encountered and parsed.section == "07":
+        append_line_error(bill, parsed, line_index, "0700100 found after the first occurrence of 0800100")
     
 def parse_0800100(bill, line_index, parsed):
-    tokens = split_predicate(line_index, parsed, bill, 1)
+    bill.first_0800100_encountered = True
+    phone = split_predicate(line_index, parsed, bill, 1)
+    # tokens = split_predicate(line_index, parsed, bill, 1)
     
 def parse_0900100(bill, line_index, parsed):
     tokens = split_predicate(line_index, parsed, bill, 2)
@@ -224,7 +229,9 @@ def parse_0900200(bill, line_index, parsed):
         append_line_error(bill,parsed,line_index,"length of tokens are not 15")
 
 def parse_0900300(bill, line_index, parsed):
-    tokens = split_predicate(line_index, parsed, bill, 15)    
+    tokens = split_predicate(line_index, parsed, bill, 15)
+    if len(tokens) % 5 != 0:
+        append_line_error(bill, parsed, line_index, "cant divide length of tokens by 5")
 
 def parse_0900400(bill, line_index, parsed):
     tokens = split_predicate(line_index, parsed, bill, 8)  
@@ -266,20 +273,25 @@ def parse_1300100(bill, line_index, parsed):
     
 def parse_1300200(bill, line_index, parsed):
     tokens = split_predicate(line_index, parsed, bill, 8)
+    if len(tokens) % 2 != 0:
+        append_line_error(bill, parsed, line_index, "cant divide length of tokens by 2")
     
 def parse_1300300(bill, line_index, parsed):
-    undefined_line(line_index, parsed)
-    # tokens = split_predicate(line_index, parsed, bill, 9)
-    # print(len(tokens))
+    tokens = combine_tokens(parsed.predicate)
+    tokens_length = len(tokens)
+    if " CM." in tokens:
+        tokens_length = tokens_length - 1
+        
+    if tokens_length % 2 != 0:
+        print(tokens)
+        append_line_error(bill, parsed, line_index, "cant divide length of tokens by 2")
     
 parse_1300400 = partial(generic_predicate, field_name="total_otros_servicios")
-# def parse_1300400(bill, line_index, parsed):
-#     undefined_line(line_index, parsed)
-    
 parse_1400100 = partial(generic_predicate, field_name="resumen_integrados")
 
 def parse_1400200(bill, line_index, parsed):
     tokens = split_predicate(line_index, parsed, bill, 12)
+    # print(len(tokens))
 
 def parse_1400300(bill, line_index, parsed):
     tokens = parsed.predicate.split()
@@ -296,6 +308,7 @@ def parse_1400600(bill, line_index, parsed):
     tokens = parsed.predicate.split()
     if len(tokens) != 4:
         append_line_error(bill,parsed,line_index,"invalid token size")
+        # print(len(tokens))
         
 parse_1401100 = partial(generic_predicate, field_name="detalle_cargos_id")
 
@@ -304,16 +317,18 @@ parse_1401200 = partial(generic_predicate, field_name="detalle_cargos_nombre")
 parse_1401210 = partial(generic_predicate, field_name="detalle_cargos_subnombre")
 
 def parse_1401300(bill, line_index, parsed):
-    undefined_line(line_index,parsed)
+    tokens = split_predicate(line_index, parsed, bill, 8)
     
 def parse_1401310(bill, line_index, parsed):
-    undefined_line(line_index,parsed)
+    tokens = split_predicate(line_index, parsed, bill, 4)
     
 def parse_1401500(bill, line_index, parsed):
-    undefined_line(line_index,parsed)
+    tokens = combine_tokens(parsed.predicate)
+    if len(tokens) % 2 != 0:
+        append_line_error(bill, parsed, line_index, "cant divide length of tokens by 2")
 
 def parse_1401600(bill, line_index, parsed):
-    undefined_line(line_index,parsed)
+    tokens = split_predicate(line_index, parsed, bill, 5)
     
 
 # 1800100
@@ -322,88 +337,134 @@ parse_1800200 = partial(generic_predicate, field_name="detalle_enlace_fecha")
 parse_1800300 = partial(generic_predicate, field_name="detalle_enlace_1800300")
 
 def parse_1800400(bill, line_index, parsed):
-    undefined_line(line_index,parsed)
+    tokens = split_predicate(line_index, parsed, bill, 9)
     
 def parse_1800410(bill, line_index, parsed):
-    undefined_line(line_index,parsed)
+    tokens = split_predicate(line_index, parsed, bill, 2)
     
 def parse_1800500(bill, line_index, parsed):
     undefined_line(line_index,parsed)
     
-def parse_1800510(bill, line_index, parsed):
-    undefined_line(line_index,parsed)
     
-def parse_1800600(bill, line_index, parsed):
-    undefined_line(line_index,parsed)
-   
+# parse_1800510 = partial(generic_predicate, field_name="dir1800510")
+    
+parse_1800600 = partial(generic_predicate, field_name="dir1800600")
     
 # 1600100
 
 parse_1600100 = partial(generic_predicate, field_name="detalle_financiamientos_id")
 
 def parse_1600200(bill, line_index, parsed):
-    undefined_line(line_index,parsed)
+    tokens = split_predicate(line_index, parsed, bill, 7)
     
 def parse_1600300(bill, line_index, parsed):
-    undefined_line(line_index,parsed)
+    tokens = parsed.predicate[50:].split()
+    if len(tokens) != 8:
+        append_line_error(bill, parsed, line_index, "invalid number of tokens")
 
 def parse_1600400(bill, line_index, parsed):
-    undefined_line(line_index,parsed)
+    tokens = parsed.predicate[76:].split()
+    if len(tokens) != 6:
+        append_line_error(bill, parsed, line_index, "invalid number of tokens")
     
 def parse_1600500(bill, line_index, parsed):
-    undefined_line(line_index,parsed)
-    
+    tokens = parsed.predicate[102:].split()
+    if len(tokens) != 2:
+        append_line_error(bill, parsed, line_index, "invalid number of tokens")
     
 # 3000000
 
-def parse_3200000(bill,line_index,parsed):
+parse_3000000 = partial(generic_predicate, field_name="300000_id")
+
+def parse_3000100(bill,line_index,parsed):
+    tokens = split_predicate(line_index, parsed, bill, 4)
+    if len(tokens) < 4:
+        append_line_error(bill, parsed, line_index, "invalid number of tokens")
+        
+parse_3000210 = partial(generic_predicate, field_name="3000210_cliente")
+parse_3000220 = partial(generic_predicate, field_name="3000220_cliente_dir")
+parse_3000230 = partial(generic_predicate, field_name="3000230_cliente_dir2")
+parse_3000240 = partial(generic_predicate, field_name="3000240_cliente_dir3")
+parse_3000250 = partial(generic_predicate, field_name="3000250_datoY")
+parse_3000260 = partial(generic_predicate, field_name="3000260_cliente_telefono")
+
+def parse_3000300(bill,line_index,parsed):
+    tokens = split_predicate(line_index, parsed, bill, 6)
+
+def parse_3000410(bill,line_index,parsed):
+    pattern = r"NIT:\d{7}-\d"
+    tokens = parsed.predicate.split()
+    if not re.match(pattern, tokens[-1]):
+        append_line_error(bill, parsed, line_index, "incorrect nit pattern")
+
+def parse_3000420(bill,line_index,parsed):
+    tokens = split_predicate(line_index, parsed, bill, 3)
+
+def parse_3000430(bill,line_index,parsed):
+    tokens = split_predicate(line_index, parsed, bill, 3)
+
+def parse_3000500(bill,line_index,parsed):
     undefined_line(line_index, parsed)
+
+def parse_3000510(bill,line_index,parsed):
+    tokens = parsed.predicate[32:].split()
+    if len(tokens) != 2:
+        append_line_error(bill, parsed, line_index, "invalid number of tokens")
+
+def parse_3000600(bill,line_index,parsed):
+    tokens = parsed.predicate[32:].split()
+    if len(tokens) != 2:
+        append_line_error(bill, parsed, line_index, "invalid number of tokens")
+
+parse_3000610 = partial(generic_predicate, field_name="3000610_notasAbonado")
+
+parse_3000700 = partial(generic_predicate, field_name="3000700_motivo")
     
+# 3200000
+
+parse_3200000 = partial(generic_predicate, field_name="320000_id")
+
 def parse_3200100(bill,line_index,parsed):
-    undefined_line(line_index, parsed)
-    
-def parse_3200210(bill,line_index,parsed):
-    undefined_line(line_index, parsed)
-    
-def parse_3200220(bill,line_index,parsed):
-    undefined_line(line_index, parsed)
-    
-def parse_3200230(bill,line_index,parsed):
-    undefined_line(line_index, parsed)
-    
-def parse_3200240(bill,line_index,parsed):
-    undefined_line(line_index, parsed)
-    
-def parse_3200250(bill,line_index,parsed):
-    undefined_line(line_index, parsed)
-    
-def parse_3200260(bill,line_index,parsed):
-    undefined_line(line_index, parsed)
-    
-def parse_3200300(bill,line_index,parsed):
-    undefined_line(line_index, parsed)
-    
+    tokens = split_predicate(line_index, parsed, bill, 4)
+    if len(tokens) < 4:
+        append_line_error(bill, parsed, line_index, "invalid number of tokens")
+        
+parse_3200210 = partial(generic_predicate, field_name="3200210_cliente")
+parse_3200220 = partial(generic_predicate, field_name="3200220_cliente_dir")
+parse_3200232 = partial(generic_predicate, field_name="3200232_cliente_dir2")
+parse_3200240 = partial(generic_predicate, field_name="3200240_cliente_dir3")
+parse_3200250 = partial(generic_predicate, field_name="3200250_datoY")
+parse_3200260 = partial(generic_predicate, field_name="3200260_cliente_telefono")
+
+def parse_3200320(bill,line_index,parsed):
+    tokens = split_predicate(line_index, parsed, bill, 6)
+
 def parse_3200410(bill,line_index,parsed):
-    undefined_line(line_index, parsed)
-    
+    pattern = r"NIT:\d{7}-\d"
+    tokens = parsed.predicate.split()
+    if not re.match(pattern, tokens[-1]):
+        append_line_error(bill, parsed, line_index, "incorrect nit pattern")
+
 def parse_3200420(bill,line_index,parsed):
-    undefined_line(line_index, parsed)
-    
-def parse_3200430(bill,line_index,parsed):
-    undefined_line(line_index, parsed)
-    
+    tokens = split_predicate(line_index, parsed, bill, 3)
+
+def parse_3200432(bill,line_index,parsed):
+    tokens = split_predicate(line_index, parsed, bill, 3)
+
 def parse_3200500(bill,line_index,parsed):
     undefined_line(line_index, parsed)
-    
+
 def parse_3200510(bill,line_index,parsed):
-    undefined_line(line_index, parsed)
-    
+    tokens = parsed.predicate[32:].split()
+    if len(tokens) != 2:
+        append_line_error(bill, parsed, line_index, "invalid number of tokens")
+
 def parse_3200600(bill,line_index,parsed):
-    undefined_line(line_index, parsed)
-    
-def parse_3200610(bill,line_index,parsed):
-    undefined_line(line_index, parsed)
-    
-def parse_3200700(bill,line_index,parsed):
-    undefined_line(line_index, parsed)
+    tokens = parsed.predicate[32:].split()
+    if len(tokens) != 2:
+        append_line_error(bill, parsed, line_index, "invalid number of tokens")
+
+parse_3200610 = partial(generic_predicate, field_name="3200610_notasAbonado")
+
+parse_3200700 = partial(generic_predicate, field_name="3200700_motivo")
     
