@@ -10,14 +10,14 @@ def get_parameters():
         # 'filename': "/home/vakord/Work/bill_parser/PROCESSED_20230502123330_CLAROGTFIJA_GFTX230311_ver01.txt"
         
         # 'filename': "ClaroGT/ClaroGT_TelefoniaFija/20230818141153_CLAROGTFIJA_GFTX230802.txt"
-        'filename': "ClaroGT/ClaroGT_TelefoniaFija/20230818141153_CLAROGTFIJA_GFTX230802_ver02.txt" 
+        # 'filename': "ClaroGT/ClaroGT_TelefoniaFija/20230818141153_CLAROGTFIJA_GFTX230802_ver02.txt" 
         
         # 'filename': "ClaroGT/20230818135133_CLAROGTFIJA_GFTX230858_original/20230818135133_CLAROGTFIJA_GFTX230858.txt.err"
         
         # 'filename': "ClaroGT/ClaroGT_TFija_20230823_ValidacionSpool/20230822225304_CLAROGTFIJA_GFTX230858_NuevoGO_12000.txt.err"
         
-        # 'filename': "ClaroGT/ClaroGT_TFija_20230823_ValidacionSpool/20230822233841_CLAROGTFIJA_GFTX230858.txt"
-           
+        'filename': "ClaroGT/ClaroGT_TFija_20230823_ValidacionSpool/20230822233841_CLAROGTFIJA_GFTX230858.txt"
+        # 'filename': "ClaroGT/ClaroGT_TFija_20230823_ValidacionSpool/20230823000216_CLAROGTFIJA_GFTX230857.txt"
     }
     return params
 
@@ -94,8 +94,8 @@ def main():
     print_errors(bills)
     # print_bill_ranges(bills)
 
-    # bad_lines = get_bad_lines(bills)
-    # purge_bad_lines(filename, bad_lines)
+    bad_lines = get_bad_lines(bills)
+    purge_bad_lines(filename, bad_lines)
 
 
 if __name__ == '__main__':

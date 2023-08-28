@@ -68,7 +68,6 @@ parse_0100900 = partial(generic_predicate, field_name="receptor_nombre")
 
 def parse_0101000(bill, line_index, parsed):
     tokens = parsed.predicate[63-7:].split()
-    # print(" tokens of 0101000 ",len(tokens))
     if len(tokens) > 6:
         append_line_error(bill, parsed, line_index, "there is not the required length for tokens")
         
@@ -82,7 +81,6 @@ def parse_0101200(bill, line_index, parsed):
         line[73-7:-1].strip(),
     ]
     for item in line_list:
-        # print(item)
         if len(item.strip()) == 0:
             append_line_error(bill,parsed,line_index, "missing values in parsed file")
 
@@ -155,7 +153,6 @@ def parse_0300110(bill,line_index,parsed):
     
 def parse_0300150(bill,line_index,parsed):
     tokens = parsed.predicate[57-7:].split()
-    # print(tokens)
     if len(tokens) != 2:
         append_line_error(bill, parsed, line_index, "length of tokens are not 2")
     
@@ -277,21 +274,23 @@ def parse_1300200(bill, line_index, parsed):
         append_line_error(bill, parsed, line_index, "cant divide length of tokens by 2")
     
 def parse_1300300(bill, line_index, parsed):
-    tokens = combine_tokens(parsed.predicate)
-    tokens_length = len(tokens)
-    if " CM." in tokens:
-        tokens_length = tokens_length - 1
+    undefined_line(line_index,parsed)
+    # tokens = combine_tokens(parsed.predicate)
+    # tokens_length = len(tokens)
+    # if " CM." in tokens:
+    #     tokens_length = tokens_length - 1
         
-    if tokens_length % 2 != 0:
-        print(tokens)
-        append_line_error(bill, parsed, line_index, "cant divide length of tokens by 2")
+    # if tokens_length % 2 != 0:
+    #     print(len(tokens))
+    #     print(tokens)
+    #     print(len(parsed.predicate))
+    #     append_line_error(bill, parsed, line_index, "cant divide length of tokens by 2")
     
 parse_1300400 = partial(generic_predicate, field_name="total_otros_servicios")
 parse_1400100 = partial(generic_predicate, field_name="resumen_integrados")
 
 def parse_1400200(bill, line_index, parsed):
     tokens = split_predicate(line_index, parsed, bill, 12)
-    # print(len(tokens))
 
 def parse_1400300(bill, line_index, parsed):
     tokens = parsed.predicate.split()
@@ -308,7 +307,6 @@ def parse_1400600(bill, line_index, parsed):
     tokens = parsed.predicate.split()
     if len(tokens) != 4:
         append_line_error(bill,parsed,line_index,"invalid token size")
-        # print(len(tokens))
         
 parse_1401100 = partial(generic_predicate, field_name="detalle_cargos_id")
 
