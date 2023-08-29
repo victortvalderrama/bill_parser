@@ -169,11 +169,13 @@ def parse_0400200(bill, line_index, parsed):
     tokens = split_predicate(line_index, parsed, bill, 3)
 
 def parse_0400300(bill, line_index, parsed):
-    undefined_line(line_index, parsed)
+    tokens = split_predicate(line_index, parsed, bill, 5)
+    if len(tokens) < 5:
+        append_line_error(bill,parsed,line_index, "no tokens enough")
 
 def parse_0400400(bill, line_index, parsed):
     tokens = split_predicate(line_index,parsed,bill,4)
-    if len(tokens) < 3:
+    if len(tokens) < 4:
         append_line_error(bill,parsed,line_index, "no authorization logic")
         
 # parse_0400410(generic_predicate, field_name="numero_autorizacion")     
@@ -207,6 +209,15 @@ def parse_0401099(bill, line_index, parsed):
     
 def parse_0401100(bill, line_index, parsed):
     tokens = split_predicate(line_index, parsed, bill, 3)
+    
+def parse_0600100(bill,line_index,parsed):
+    tokens = split_predicate(line_index, parsed, bill, 4)
+
+def parse_0600200(bill,line_index,parsed):
+    tokens = split_predicate(line_index, parsed, bill, 2)
+
+def parse_0600300(bill,line_index,parsed):
+    undefined_line(line_index, parsed)
 
 def parse_0700100(bill, line_index, parsed):
     if bill.first_0800100_encountered and parsed.section == "07":
@@ -245,6 +256,7 @@ def parse_1100200(bill, line_index, parsed):
 def parse_1100300(bill, line_index, parsed):
     tokens = combine_tokens(parsed.predicate)
     if len(tokens) % 3 != 0:
+        print(tokens)
         append_line_error(bill, parsed, line_index, "cant divide length of tokens by 3")
     
 def parse_1100400(bill, line_index, parsed):
@@ -274,17 +286,10 @@ def parse_1300200(bill, line_index, parsed):
         append_line_error(bill, parsed, line_index, "cant divide length of tokens by 2")
     
 def parse_1300300(bill, line_index, parsed):
-    undefined_line(line_index,parsed)
-    # tokens = combine_tokens(parsed.predicate)
-    # tokens_length = len(tokens)
-    # if " CM." in tokens:
-    #     tokens_length = tokens_length - 1
-        
-    # if tokens_length % 2 != 0:
-    #     print(len(tokens))
-    #     print(tokens)
-    #     print(len(parsed.predicate))
-    #     append_line_error(bill, parsed, line_index, "cant divide length of tokens by 2")
+    tokens = custom_tokenize(parsed.predicate)
+    if len(tokens) % 2 != 0:
+        print(tokens)
+        append_line_error(bill, parsed, line_index, "cant divide length of tokens by 2")
     
 parse_1300400 = partial(generic_predicate, field_name="total_otros_servicios")
 parse_1400100 = partial(generic_predicate, field_name="resumen_integrados")

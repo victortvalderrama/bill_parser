@@ -6,6 +6,7 @@ import pprint
 
 def get_parameters():
     params = {
+        
         # "filename": "ClaroGT/ClaroGT_TelefoniaFija/TelefoniaFija/20230502124243_CLAROGTFIJA_GFTX230311_ver02.txt.err"
         # 'filename': "/home/vakord/Work/bill_parser/PROCESSED_20230502123330_CLAROGTFIJA_GFTX230311_ver01.txt"
         
@@ -16,8 +17,14 @@ def get_parameters():
         
         # 'filename': "ClaroGT/ClaroGT_TFija_20230823_ValidacionSpool/20230822225304_CLAROGTFIJA_GFTX230858_NuevoGO_12000.txt.err"
         
-        'filename': "ClaroGT/ClaroGT_TFija_20230823_ValidacionSpool/20230822233841_CLAROGTFIJA_GFTX230858.txt"
-        # 'filename': "ClaroGT/ClaroGT_TFija_20230823_ValidacionSpool/20230823000216_CLAROGTFIJA_GFTX230857.txt"
+        # 'filename': "ClaroGT/ClaroGT_TFija_20230823_ValidacionSpool/20230822233841_CLAROGTFIJA_GFTX230858_OK/20230822233841_CLAROGTFIJA_GFTX230858.txt"
+        # 'filename': "ClaroGT/ClaroGT_TFija_20230823_ValidacionSpool/20230823000216_CLAROGTFIJA_GFTX230857_OK/20230823000216_CLAROGTFIJA_GFTX230857.txt"
+        # 'filename': "ClaroGT/ClaroGT_TFija_20230823_ValidacionSpool/20230825133559_CLAROGTFIJA_GFTX230858/20230825133559_CLAROGTFIJA_GFTX230858.txt"
+        'filename': "ClaroGT/ClaroGT_TFija_20230823_ValidacionSpool/20230822225304_CLAROGTFIJA_GFTX230858_NuevoGO_12000_ERROR/20230822225304_CLAROGTFIJA_GFTX230858_NuevoGO_12000.txt.err"
+        
+        # 'filename': "ClaroGT/0600100/20230825151413_CLAROGTFIJA_GFTX230717.txt"
+        # 'filename': "ClaroGT/0600100/20230825151506_CLAROGTFIJA_GFTX230723.txt"
+        # 'filename': "ClaroGT/0600100/20230825151600_CLAROGTFIJA_GFTX230733.txt"
     }
     return params
 
