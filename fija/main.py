@@ -23,16 +23,19 @@ def purge_bad_lines(filename, bad_lines, output_route):
     target_good = f"{output_route}/{path.name}{path.suffix}"
     target_bad = f"{output_route}/{path.name}{path.suffix}.err"
     
-    with open(filename, "r", encoding="ISO-8859-1") as original, \
-         open(target_good, "w", encoding="ISO-8859-1") as processed_good, \
-         open(target_bad, "w", encoding="ISO-8859-1") as processed_bad:
-
-        for index, line in enumerate(original):
-            line = f"{line}"
-            if index not in bad_lines:
-                processed_good.write(line)
-            else:
-                processed_bad.write(line)
+    if bad_lines:
+        with open(filename, "r", encoding="ISO-8859-1") as original, \
+            open(target_good, "w", encoding="ISO-8859-1") as processed_good, \
+            open(target_bad, "w", encoding="ISO-8859-1") as processed_bad:
+                
+            for index, line in enumerate(original):
+                line = f"{line}"
+                if index not in bad_lines:
+                    processed_good.write(line)
+                else:
+                    processed_bad.write(line)
+    else:
+        print("no erros in lines found")
 
 
 def print_errors(bills):
@@ -86,8 +89,10 @@ def main():
     filename = args.file
     output_route = args.output
     
+    if not os.path.exists(output_route):
+        os.mkdir(output_route)
+    
     fp = file_stream_reader(filename)
-    # bills = parse(fp, [30])
     bills = parse(fp, [7,8,30])
 
     print_errors(bills)

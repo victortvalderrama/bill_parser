@@ -5,7 +5,7 @@ __pycache__/
 
 /ClaroGT
 /outputFiles
-/output
+*/output
 # C extensions
 *.so
 
