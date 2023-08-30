@@ -17,26 +17,22 @@ def get_bad_lines(bills):
     # print(bad_lines)
     return bad_lines
 
+
 def purge_bad_lines(filename, bad_lines, output_route):
     path = get_path_data(filename)
     target_good = f"{output_route}/{path.name}{path.suffix}"
     target_bad = f"{output_route}/{path.name}{path.suffix}.err"
     
-    original = open(filename, "r", encoding="ISO-8859-1")
-    processed_good = open(target_good, "w", encoding="ISO-8859-1")
-    processed_bad = open(target_bad, "w", encoding="ISO-8859-1")
+    with open(filename, "r", encoding="ISO-8859-1") as original, \
+         open(target_good, "w", encoding="ISO-8859-1") as processed_good, \
+         open(target_bad, "w", encoding="ISO-8859-1") as processed_bad:
 
-    for index, line in enumerate(original):
-        line = f"{line}"
-        if index not in bad_lines:
-            processed_good.write(line)
-        else:
-            processed_bad.write(line)
-        
-    original.close()
-    processed_good.close()
-    processed_bad.close()
-    return
+        for index, line in enumerate(original):
+            line = f"{line}"
+            if index not in bad_lines:
+                processed_good.write(line)
+            else:
+                processed_bad.write(line)
 
 
 def print_errors(bills):
@@ -75,7 +71,7 @@ def main():
     )
 
     parser.add_argument("--file", help="Ruta/de/archivo.txt ")
-    parser.add_argument("--output", help="Ruta/de/archivos/resultado")
+    parser.add_argument("--output", help="Ruta/para/archivos/procesados")
 
     args = parser.parse_args()
 
