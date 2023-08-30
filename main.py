@@ -1,32 +1,10 @@
 #!/usr/bin/env python
+import argparse
+import os
 from ioutils import file_stream_reader, get_path_data
 from parser import parse
 from models import code_to_textual
 import pprint
-
-def get_parameters():
-    params = {
-        
-        # "filename": "ClaroGT/ClaroGT_TelefoniaFija/TelefoniaFija/20230502124243_CLAROGTFIJA_GFTX230311_ver02.txt.err"
-        # 'filename': "/home/vakord/Work/bill_parser/PROCESSED_20230502123330_CLAROGTFIJA_GFTX230311_ver01.txt"
-        
-        # 'filename': "ClaroGT/ClaroGT_TelefoniaFija/20230818141153_CLAROGTFIJA_GFTX230802.txt"
-        # 'filename': "ClaroGT/ClaroGT_TelefoniaFija/20230818141153_CLAROGTFIJA_GFTX230802_ver02.txt" 
-        
-        # 'filename': "ClaroGT/20230818135133_CLAROGTFIJA_GFTX230858_original/20230818135133_CLAROGTFIJA_GFTX230858.txt.err"
-        
-        # 'filename': "ClaroGT/ClaroGT_TFija_20230823_ValidacionSpool/20230822225304_CLAROGTFIJA_GFTX230858_NuevoGO_12000.txt.err"
-        
-        # 'filename': "ClaroGT/ClaroGT_TFija_20230823_ValidacionSpool/20230822233841_CLAROGTFIJA_GFTX230858_OK/20230822233841_CLAROGTFIJA_GFTX230858.txt"
-        # 'filename': "ClaroGT/ClaroGT_TFija_20230823_ValidacionSpool/20230823000216_CLAROGTFIJA_GFTX230857_OK/20230823000216_CLAROGTFIJA_GFTX230857.txt"
-        # 'filename': "ClaroGT/ClaroGT_TFija_20230823_ValidacionSpool/20230825133559_CLAROGTFIJA_GFTX230858/20230825133559_CLAROGTFIJA_GFTX230858.txt"
-        'filename': "ClaroGT/ClaroGT_TFija_20230823_ValidacionSpool/20230822225304_CLAROGTFIJA_GFTX230858_NuevoGO_12000_ERROR/20230822225304_CLAROGTFIJA_GFTX230858_NuevoGO_12000.txt.err"
-        
-        # 'filename': "ClaroGT/0600100/20230825151413_CLAROGTFIJA_GFTX230717.txt"
-        # 'filename': "ClaroGT/0600100/20230825151506_CLAROGTFIJA_GFTX230723.txt"
-        # 'filename': "ClaroGT/0600100/20230825151600_CLAROGTFIJA_GFTX230733.txt"
-    }
-    return params
 
 
 def get_bad_lines(bills):
@@ -39,10 +17,10 @@ def get_bad_lines(bills):
     # print(bad_lines)
     return bad_lines
 
-def purge_bad_lines(filename, bad_lines):
+def purge_bad_lines(filename, bad_lines, output_route):
     path = get_path_data(filename)
-    target_good = f"PROCESSED_GOOD_{path.name}{path.suffix}"
-    target_bad = f"PROCESSED_BAD_{path.name}{path.suffix}"
+    target_good = f"{output_route}/{path.name}{path.suffix}"
+    target_bad = f"{output_route}/{path.name}{path.suffix}.err"
     
     original = open(filename, "r", encoding="ISO-8859-1")
     processed_good = open(target_good, "w", encoding="ISO-8859-1")
@@ -92,8 +70,26 @@ def print_bill_ranges(bills):
 
 
 def main():
-    params = get_parameters()
-    filename = params["filename"]
+    parser = argparse.ArgumentParser(
+        usage="introduce la ruta del archivo con facturas:\n Bills.txt"
+    )
+
+    parser.add_argument("--file", help="Ruta/de/archivo.txt ")
+    parser.add_argument("--output", help="Ruta/de/archivos/resultado")
+
+    args = parser.parse_args()
+
+    if args.file is None:
+        parser.print_help()
+        exit()
+
+    if args.output is None:
+        parser.print_help()
+        exit()
+
+    filename = args.file
+    output_route = args.output
+    
     fp = file_stream_reader(filename)
     # bills = parse(fp, [30])
     bills = parse(fp, [7,8,30])
@@ -102,7 +98,7 @@ def main():
     # print_bill_ranges(bills)
 
     bad_lines = get_bad_lines(bills)
-    purge_bad_lines(filename, bad_lines)
+    purge_bad_lines(filename, bad_lines, output_route)
 
 
 if __name__ == '__main__':
