@@ -24,6 +24,8 @@ def purge_bad_lines(filename, bad_lines, output_route):
     target_bad = f"{output_route}/{path.name}{path.suffix}.err"
     
     if bad_lines:
+        if not os.path.exists(output_route):
+            os.mkdir(output_route)
         with open(filename, "r", encoding="ISO-8859-1") as original, \
             open(target_good, "w", encoding="ISO-8859-1") as processed_good, \
             open(target_bad, "w", encoding="ISO-8859-1") as processed_bad:
@@ -83,14 +85,10 @@ def main():
         exit()
 
     if args.output is None:
-        parser.print_help()
-        exit()
+        args.output = "./output/"
 
     filename = args.file
     output_route = args.output
-    
-    if not os.path.exists(output_route):
-        os.mkdir(output_route)
     
     fp = file_stream_reader(filename)
     bills = parse(fp, [7,8,30])
