@@ -175,10 +175,10 @@ def parse_0400300(bill, line_index, parsed):
 
 def parse_0400400(bill, line_index, parsed):
     tokens = split_predicate(line_index,parsed,bill,4)
-    if len(tokens) < 4:
-        append_line_error(bill,parsed,line_index, "no authorization logic")
+    # if len(tokens) < 4:
+    #     append_line_error(bill,parsed,line_index, "no authorization logic")
         
-# parse_0400410(generic_predicate, field_name="numero_autorizacion")     
+# parse_0400410(generic_predicate, field_name="numero_autorizacion")
 def parse_0400410(bill, line_index, parsed):
     undefined_line(line_index, parsed)
 
