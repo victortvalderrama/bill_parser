@@ -1,4 +1,1 @@
-altgraph==0.17.3
-chardet==5.2.0
-pyinstaller==5.13.2
-pyinstaller-hooks-contrib==2023.8
+pytest
