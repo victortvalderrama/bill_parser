@@ -1,0 +1,19 @@
+FIXED_HEAD_SLICE = slice(0, 5)
+FIXED_SECTION_SLICE = slice(0, 2)
+FIXED_SUB_SECTION_SLICE = slice(2, 4)
+FIXED_SUB_SUB_SECTION_SLICE = slice(4, 7)
+FIXED_PREDICATE_SLICE = slice(7, None)
+
+MOBILE_HEAD_SLICE = slice(0, 6)
+MOBILE_SECTION_SLICE = slice(0, 2)
+MOBILE_SUB_SECTION_SLICE = slice(2, 4)
+MOBILE_SUB_SUB_SECTION_SLICE = slice(4, 7)
+MOBILE_PREDICATE_SLICE = slice(6, None)
+
+
+BAD_SUFFIXES = [
+    ".bad",
+    ".er",
+    ".err",
+    ".error",
+]

@@ -1,0 +1,22 @@
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+pytest-cov = "^4.1.0"
+
+[tool.pytest.ini_options]
+python_files = ["test_*.py", "*_test.py", "testing/python/*.py"]
+pythonpath = ["."]
+
+[tool.coverage.run]
+omit = [
+    # are tests
+    "*/tests/*",
+
+    # no code
+    "*/__init__.py",
+    "*/constants.py",
+
+
+]
