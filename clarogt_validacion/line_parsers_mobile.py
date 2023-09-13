@@ -8,57 +8,39 @@ import re
 
 # SECTION 10000
 
-def parse_100000(bill, line_index, parsed):
-    # undefined_line(line_index, parsed)
-    print(parsed.predicate[28:])
+parse_100000 = partial(generic_predicate, field_name= "100000_seccion")
+   
+parse_100001 = partial(generic_predicate, field_name= "100001_docType")
 
-def parse_100001(bill, line_index, parsed):
-    pass
+parse_100002 = partial(generic_predicate, field_name= "100002_docNum")
 
-def parse_100002(bill, line_index, parsed):
-    pass
+parse_100003 = partial(generic_predicate, field_name= "100003_clientCat")
 
-def parse_100003(bill, line_index, parsed):
-    pass
+parse_100004 = partial(generic_predicate, field_name= "100004_clientCycle")
 
-def parse_100004(bill, line_index, parsed):
-    pass
+parse_100005 = partial(generic_predicate, field_name= "100005_initPeriod")
 
-def parse_100005(bill, line_index, parsed):
-    pass
+parse_100006 = partial(generic_predicate, field_name= "100006_endPeriod")
 
-def parse_100006(bill, line_index, parsed):
-    pass
+parse_100007 = partial(generic_predicate, field_name= "100007_acredDate")
 
-def parse_100007(bill, line_index, parsed):
-    pass
+parse_100008 = partial(generic_predicate, field_name= "100008_emmitionDate")
 
-def parse_100008(bill, line_index, parsed):
-    pass
+parse_100009 = partial(generic_predicate, field_name= "100009_limitPayDate")
 
-def parse_100009(bill, line_index, parsed):
-    pass
+parse_100010 = partial(generic_predicate, field_name= "100010_noContracts")
 
-def parse_100010(bill, line_index, parsed):
-    pass
+parse_100011 = partial(generic_predicate, field_name= "100011_series")
 
-def parse_100011(bill, line_index, parsed):
-    pass
+parse_100012 = partial(generic_predicate, field_name= "100012_preprinted")
 
-def parse_100012(bill, line_index, parsed):
-    pass
+parse_100013 = partial(generic_predicate, field_name= "100013_authNumber")
 
-def parse_100013(bill, line_index, parsed):
-    pass
+parse_100014 = partial(generic_predicate, field_name= "100014_adminSeries")
 
-def parse_100014(bill, line_index, parsed):
-    pass
+parse_100015 = partial(generic_predicate, field_name= "100015_adminNumber")
 
-def parse_100015(bill, line_index, parsed):
-    pass
-
-def parse_100016(bill, line_index, parsed):
-    pass
+parse_100016 = partial(generic_predicate, field_name= "100016_trafficDetail")
 
 def parse_100100(bill, line_index, parsed):
     pass
