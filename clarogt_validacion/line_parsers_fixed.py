@@ -286,10 +286,11 @@ def parse_1300200(bill, line_index, parsed):
         append_line_error(bill, parsed, line_index, "cant divide length of tokens by 2")
     
 def parse_1300300(bill, line_index, parsed):
-    tokens = custom_tokenize(parsed.predicate)
-    if len(tokens) % 2 != 0:
+    range_list = [(19,45),(82,108)]
+    tokens = remove_string_segments(parsed.predicate, range_list)
+    if len(tokens) % 3 != 0:
         print(tokens)
-        append_line_error(bill, parsed, line_index, "cant divide length of tokens by 2")
+        append_line_error(bill, parsed, line_index, "cant divide length of tokens by 3")
     
 parse_1300400 = partial(generic_predicate, field_name="total_otros_servicios")
 parse_1400100 = partial(generic_predicate, field_name="resumen_integrados")
@@ -326,9 +327,15 @@ def parse_1401310(bill, line_index, parsed):
     tokens = split_predicate(line_index, parsed, bill, 4)
     
 def parse_1401500(bill, line_index, parsed):
-    tokens = combine_tokens(parsed.predicate)
-    if len(tokens) % 2 != 0:
-        append_line_error(bill, parsed, line_index, "cant divide length of tokens by 2")
+    range_list = [(10,25)]
+    tokens = remove_string_segments(parsed.predicate, range_list)
+    # print(len(tokens))
+    if len(tokens) != 7:
+        print(len(tokens))
+        print(tokens)
+        append_line_error(bill,parsed,line_index,"not 7 tokens")
+    # if len(tokens) % 2 != 0:
+    #     append_line_error(bill, parsed, line_index, "cant divide length of tokens by 2")
 
 def parse_1401600(bill, line_index, parsed):
     tokens = split_predicate(line_index, parsed, bill, 5)

@@ -99,8 +99,8 @@ def main():
     print_errors(bills)
     # print_bill_ranges(bills)
 
-    bad_lines = get_bad_lines(bills)
-    purge_bad_lines(filename, bad_lines, output_route)
+    # bad_lines = get_bad_lines(bills)
+    # purge_bad_lines(filename, bad_lines, output_route)
 
 
 if __name__ == '__main__':
