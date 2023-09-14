@@ -129,3 +129,13 @@ def custom_tokenize(line):
             new_tokens.append(token)
 
     return new_tokens
+
+def remove_string_segments(string, range_list):
+    res = ""
+    for idx, chr in enumerate(string):
+        for strt_idx, end_idx in range_list:
+            if strt_idx <= idx +1 <= end_idx:
+                break
+        else:
+            res += chr
+    return res.split()

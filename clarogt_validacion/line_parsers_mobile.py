@@ -8,38 +8,22 @@ import re
 
 # SECTION 10000
 
-parse_100000 = partial(generic_predicate, field_name= "100000_seccion")
-   
+parse_100000 = partial(generic_predicate, field_name= "100000_seccion")   
 parse_100001 = partial(generic_predicate, field_name= "100001_docType")
-
 parse_100002 = partial(generic_predicate, field_name= "100002_docNum")
-
 parse_100003 = partial(generic_predicate, field_name= "100003_clientCat")
-
 parse_100004 = partial(generic_predicate, field_name= "100004_clientCycle")
-
 parse_100005 = partial(generic_predicate, field_name= "100005_initPeriod")
-
 parse_100006 = partial(generic_predicate, field_name= "100006_endPeriod")
-
 parse_100007 = partial(generic_predicate, field_name= "100007_acredDate")
-
 parse_100008 = partial(generic_predicate, field_name= "100008_emmitionDate")
-
 parse_100009 = partial(generic_predicate, field_name= "100009_limitPayDate")
-
 parse_100010 = partial(generic_predicate, field_name= "100010_noContracts")
-
 parse_100011 = partial(generic_predicate, field_name= "100011_series")
-
 parse_100012 = partial(generic_predicate, field_name= "100012_preprinted")
-
 parse_100013 = partial(generic_predicate, field_name= "100013_authNumber")
-
 parse_100014 = partial(generic_predicate, field_name= "100014_adminSeries")
-
 parse_100015 = partial(generic_predicate, field_name= "100015_adminNumber")
-
 parse_100016 = partial(generic_predicate, field_name= "100016_trafficDetail")
 
 def parse_100100(bill, line_index, parsed):

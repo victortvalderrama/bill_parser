@@ -253,10 +253,11 @@ def parse_1100200(bill, line_index, parsed):
     tokens = split_predicate(line_index, parsed, bill, 12)
     
 def parse_1100300(bill, line_index, parsed):
-    tokens = combine_tokens(parsed.predicate)
-    if len(tokens) % 3 != 0:
-        print(tokens)
-        append_line_error(bill, parsed, line_index, "cant divide length of tokens by 3")
+    range_list = [(30,51),(90,114)]
+    tokens = remove_string_segments(parsed.predicate, range_list)
+    if len(tokens) % 5 != 0:
+        append_line_error(bill, parsed, line_index, "invalid number of rows, can't divide by 5")
+        print(tokens) 
     
 def parse_1100400(bill, line_index, parsed):
     tokens = split_predicate(line_index, parsed, bill, 10)
@@ -360,8 +361,9 @@ def parse_1600200(bill, line_index, parsed):
     tokens = split_predicate(line_index, parsed, bill, 7)
     
 def parse_1600300(bill, line_index, parsed):
-    tokens = parsed.predicate[50:].split()
-    if len(tokens) != 8:
+    tokens = parsed.predicate[76:].split() 
+    if len(tokens) != 7:
+        print(tokens)
         append_line_error(bill, parsed, line_index, "invalid number of tokens")
 
 def parse_1600400(bill, line_index, parsed):
