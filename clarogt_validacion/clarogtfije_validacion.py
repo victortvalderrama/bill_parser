@@ -74,13 +74,15 @@ def main():
     parser = argparse.ArgumentParser(
         usage="introduce la ruta del archivo con facturas:\n Bills.txt"
     )
+    
 
     parser.add_argument("--file", help="Ruta/de/archivo.txt ")
     parser.add_argument("--output", help="Ruta/para/archivos/procesados")
+    parser.add_argument("--billtype", help="Tipo de parseo a ejecutar: fixed/mobile",  choices=["fixed", "mobile"])
 
     args = parser.parse_args()
 
-    if args.file is None:
+    if not args.file  or not args.billtype:
         parser.print_help()
         exit()
 
@@ -89,9 +91,10 @@ def main():
 
     filename = args.file
     output_route = args.output
+    parse_type = args.billtype
     
     fp = file_stream_reader(filename)
-    bills = parse(fp, [7,8,30])
+    bills = parse(fp, [7,8,30], parse_type=parse_type)
 
     print_errors(bills)
     # print_bill_ranges(bills)

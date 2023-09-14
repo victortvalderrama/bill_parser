@@ -7,168 +7,192 @@ from helpers import *
 import re
 
 # SECTION 10000
+def strip_mobile(string):
+    return string[28:]
 
-parse_100000 = partial(generic_predicate, field_name= "100000_seccion")   
-parse_100001 = partial(generic_predicate, field_name= "100001_docType")
-parse_100002 = partial(generic_predicate, field_name= "100002_docNum")
-parse_100003 = partial(generic_predicate, field_name= "100003_clientCat")
-parse_100004 = partial(generic_predicate, field_name= "100004_clientCycle")
-parse_100005 = partial(generic_predicate, field_name= "100005_initPeriod")
-parse_100006 = partial(generic_predicate, field_name= "100006_endPeriod")
-parse_100007 = partial(generic_predicate, field_name= "100007_acredDate")
-parse_100008 = partial(generic_predicate, field_name= "100008_emmitionDate")
-parse_100009 = partial(generic_predicate, field_name= "100009_limitPayDate")
-parse_100010 = partial(generic_predicate, field_name= "100010_noContracts")
-parse_100011 = partial(generic_predicate, field_name= "100011_series")
-parse_100012 = partial(generic_predicate, field_name= "100012_preprinted")
-parse_100013 = partial(generic_predicate, field_name= "100013_authNumber")
-parse_100014 = partial(generic_predicate, field_name= "100014_adminSeries")
-parse_100015 = partial(generic_predicate, field_name= "100015_adminNumber")
-parse_100016 = partial(generic_predicate, field_name= "100016_trafficDetail")
+def maximum_mobile_tokens(line_index, parsed, bill, split_len):
+    string = parsed.predicate[28:]
+    tokens = string.split()
+    if len(tokens) > split_len:
+        append_line_error(bill, parsed, line_index, "exceeded tokens")
+        return None
+    return  tokens
 
-def parse_100100(bill, line_index, parsed):
-    pass
+def parse_100000(bill, line_index, parsed):
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
-def parse_100101(bill, line_index, parsed):
-    pass
+parse_100001 = partial(generic_predicate, field_name="doctype")
+
+def parse_100002(bill, line_index, parsed):
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
+
+def parse_100003(bill, line_index, parsed):
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
+
+def parse_100004(bill, line_index, parsed):
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
+
+def parse_100005(bill, line_index, parsed):
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
+
+def parse_100006(bill, line_index, parsed):
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
+
+def parse_100007(bill, line_index, parsed):
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
+
+def parse_100008(bill, line_index, parsed):
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
+
+def parse_100009(bill, line_index, parsed):
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
+
+def parse_100010(bill, line_index, parsed):
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
+
+def parse_100011(bill, line_index, parsed):
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
+
+def parse_100012(bill, line_index, parsed):
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
+
+def parse_100013(bill, line_index, parsed):
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
+
+def parse_100014(bill, line_index, parsed):
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
+
+def parse_100015(bill, line_index, parsed):
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
+
+def parse_100016(bill, line_index, parsed):
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
+
+
+parse_100100 = partial(generic_predicate, field_name= "100101_section")
+parse_100101 = partial(generic_predicate, field_name="nombre_emisor")
 
 def parse_100102(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
-def parse_100103(bill, line_index, parsed):
-    pass
+parse_100103 = partial(generic_predicate, field_name="nombre_comercial")
 
-def parse_100104(bill, line_index, parsed):
-    pass
+parse_100104 = partial(generic_predicate, field_name="dir_emisor")
 
 def parse_100105(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100106(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100107(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100200(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
-def parse_100201(bill, line_index, parsed):
-    pass
+parse_100201 = partial(generic_predicate, field_name="cliente_nombre")
 
 def parse_100202(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100203(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
-def parse_100204(bill, line_index, parsed):
-    pass
-
-def parse_100205(bill, line_index, parsed):
-    pass
-
-def parse_100206(bill, line_index, parsed):
-    pass
+parse_100204 = partial(generic_predicate, field_name="cliente_dir_l1")
+parse_100205 = partial(generic_predicate, field_name="cliente_dir_l2")
+parse_100206 = partial(generic_predicate, field_name="cliente_dir_l3")
 
 def parse_100207(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100208(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 2)
 
 def parse_100209(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100300(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100301(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100302(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100303(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100304(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100305(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100306(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100307(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100308(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100309(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100310(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100311(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100312(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
-def parse_100313(bill, line_index, parsed):
-    pass
+parse_100313 = partial(generic_predicate, field_name="total_letras")
 
 def parse_100400(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100401(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100402(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100403(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100404(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100405(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100406(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100407(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
-def parse_100408(bill, line_index, parsed):
-    pass
+parse_100408 = partial(generic_predicate, field_name="resolucion")
 
 def parse_100409(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
-def parse_100410(bill, line_index, parsed):
-    pass
+parse_100410 = partial(generic_predicate, field_name="observaciones")
 
 def parse_100430(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100500(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 2)
 
-def parse_100501(bill, line_index, parsed):
-    pass
-
-def parse_100502(bill, line_index, parsed):
-    pass
-
-def parse_100503(bill, line_index, parsed):
-    pass
+parse_100501 = partial(generic_predicate, field_name="txt1")
+parse_100502 = partial(generic_predicate, field_name="txt2")
+parse_100503 = partial(generic_predicate, field_name="txt3")
 
 def parse_100600(bill, line_index, parsed):
     pass
