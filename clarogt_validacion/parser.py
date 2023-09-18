@@ -9,12 +9,14 @@ from constants import (
     FIXED_SECTION_SLICE,
     FIXED_SUB_SECTION_SLICE,
     FIXED_SUB_SUB_SECTION_SLICE,
+    FIXED_ENDING_SECTION,
     
     MOBILE_HEAD_SLICE,
     MOBILE_SECTION_SLICE,
     MOBILE_SUB_SECTION_SLICE,
     MOBILE_SUB_SUB_SECTION_SLICE,
     MOBILE_PREDICATE_SLICE,
+    MOBILE_ENDING_SECTION,
 )
 
 from models import FixedBill, MobileBill, Line
@@ -73,14 +75,9 @@ def load_line(bill, line_index, parsed, parse_type):
     bill.processed_lines.append(parsed.section_index)
 
 
-def parse(iterable, excluded_sections=None, parse_type=None):
+def parse_fixed(iterable, excluded_sections=None, parse_type=None):
     
-    if parse_type == "fixed":
-        BillModel = FixedBill
-    elif parse_type == "mobile":
-        BillModel = MobileBill
-    else:
-        raise ValueError(f"Invalid parse type '{parse_type}'")
+    BillModel = FixedBill
     
     if excluded_sections is None:
         excluded_sections = []
@@ -92,17 +89,12 @@ def parse(iterable, excluded_sections=None, parse_type=None):
 
     for index, line in enumerate(iterable):
         line_index = index
-        
-        if parse_type == "fixed":
-            parsed = tokenize_fixed(line)
-        
-        else:
-            parsed = tokenize_mobile(line)
 
+        parsed = tokenize_fixed(line)
         curr_section = int(parsed.section)
         
         if (
-            (curr_section == 50 or 
+            (curr_section == FIXED_ENDING_SECTION or 
             (curr_section < prev_section and curr_section not in excluded_sections))
         ):
 
@@ -116,7 +108,55 @@ def parse(iterable, excluded_sections=None, parse_type=None):
         load_line(bill, line_index, parsed, parse_type)
         prev_section = int(parsed.section)
         
-    if curr_section != 50: # stray bill
+    if curr_section != FIXED_ENDING_SECTION: # stray bill
         bill.end_line = index + 1
         bills.append(bill)
     return bills
+
+
+def parse_mobile(iterable, excluded_sections=None, parse_type=None):
+    BillModel = MobileBill
+    
+    if excluded_sections is None:
+        excluded_sections = []
+        
+    bills = []
+    bill = BillModel(start_line=0)
+    
+    prev_section = 1
+
+    for index, line in enumerate(iterable):
+        line_index = index
+
+        parsed = tokenize_fixed(line)
+        curr_section = int(parsed.section)
+        
+        if (
+            (curr_section == MOBILE_ENDING_SECTION or 
+            (curr_section < prev_section and curr_section not in excluded_sections))
+        ):
+
+            load_line(bill, line_index, parsed, parse_type)
+            bill.end_line = index
+            bills.append(bill)
+            bill = BillModel(start_line=index + 1)
+            prev_section = 1
+            continue
+        
+        load_line(bill, line_index, parsed, parse_type)
+        prev_section = int(parsed.section)
+        
+    if curr_section != MOBILE_ENDING_SECTION: # stray bill
+        bill.end_line = index + 1
+        bills.append(bill)
+    return bills
+
+def parse(iterable, excluded_sections=None, parse_type=None):
+    if parse_type == "fixed":
+        bills = parse_fixed(iterable, excluded_sections, parse_type)
+        return bills
+    elif parse_type == "mobile":
+        bills = parse_mobile(iterable, excluded_sections, parse_type)
+        return bills
+    else:
+        raise ValueError(f"Received unknown type '{parse_type}'")
