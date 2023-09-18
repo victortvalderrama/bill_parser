@@ -248,16 +248,17 @@ def parse_0900500(bill, line_index, parsed):
     
 def parse_1100100(bill, line_index, parsed):
     tokens = split_predicate(line_index, parsed, bill, 3)
+    
 
 def parse_1100200(bill, line_index, parsed):
     tokens = split_predicate(line_index, parsed, bill, 12)
     
 def parse_1100300(bill, line_index, parsed):
-    range_list = [(30,51),(90,114)]
+    range_list = [(30,50),(90,112)]
     tokens = remove_string_segments(parsed.predicate, range_list)
     if len(tokens) % 5 != 0:
-        append_line_error(bill, parsed, line_index, "invalid number of rows, can't divide by 5")
-        print(tokens) 
+        print(tokens)
+        append_line_error(bill, parsed, line_index, "invalid number of rows, can't divide by 5") 
     
 def parse_1100400(bill, line_index, parsed):
     tokens = split_predicate(line_index, parsed, bill, 10)

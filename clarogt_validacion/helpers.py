@@ -4,6 +4,12 @@ from functools import partial
 from collections import namedtuple
 import re
 
+try:
+    T_PATTERN_TYPE = re._pattern_type
+except AttributeError:
+    T_PATTERN_TYPE = re.Pattern
+
+
 def validate_tokens(tokens, expected_patterns):
     errors = []
 
@@ -16,7 +22,7 @@ def validate_tokens(tokens, expected_patterns):
         pattern = ep[0]
         error_str = ep[1]
 
-        if type(pattern) == re.Pattern:        
+        if type(pattern) == T_PATTERN_TYPE:        
             if not pattern.match(token):
                 errors.append(error_str)
         

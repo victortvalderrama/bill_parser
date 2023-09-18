@@ -26,8 +26,7 @@ parse_100001 = partial(generic_predicate, field_name="doctype")
 def parse_100002(bill, line_index, parsed):
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
-def parse_100003(bill, line_index, parsed):
-    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
+parse_100003 =partial(generic_predicate, field_name="100003_clienteCategoria")
 
 def parse_100004(bill, line_index, parsed):
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
@@ -106,8 +105,7 @@ parse_100206 = partial(generic_predicate, field_name="cliente_dir_l3")
 def parse_100207(bill, line_index, parsed):
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
-def parse_100208(bill, line_index, parsed):
-    tokens = maximum_mobile_tokens(line_index, parsed, bill, 2)
+parse_100208 = partial(generic_predicate, field_name="100208_clienteEmail")
 
 def parse_100209(bill, line_index, parsed):
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
@@ -168,8 +166,7 @@ def parse_100403(bill, line_index, parsed):
 def parse_100404(bill, line_index, parsed):
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
-def parse_100405(bill, line_index, parsed):
-    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
+parse_100405 = partial(generic_predicate, field_name="100405_courierRuta")
 
 def parse_100406(bill, line_index, parsed):
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
@@ -195,67 +192,68 @@ parse_100502 = partial(generic_predicate, field_name="txt2")
 parse_100503 = partial(generic_predicate, field_name="txt3")
 
 def parse_100600(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1) 
 
 def parse_100602(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 6)
+    # if len(tokens) != 6:
+    #     append_line_error(bill, parsed, line_index, "not 6 tokens")
 
 def parse_100603(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 6)
 
 def parse_100604(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 2)
 
 def parse_200000(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_200003(bill, line_index, parsed):
-    pass
+    range_list = [(24,99)]
+    tokens = remove_string_segments(parsed.predicate, range_list)
+    if len(tokens)!= 3:
+        append_line_error(bill, parsed, line_index, "unexpected tokens length")
 
-def parse_200004(bill, line_index, parsed):
-    pass
+parse_200004 = partial(generic_predicate, field_name="20004_total")
 
 def parse_200100(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
-def parse_200101(bill, line_index, parsed):
-    pass
-
-def parse_200102(bill, line_index, parsed):
-    pass
+parse_200101 = partial(generic_predicate, field_name="200101")
+parse_200102 = partial(generic_predicate, field_name="200102")
 
 def parse_200103(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 2)
 
 def parse_200104(bill, line_index, parsed):
-    pass
+    tokens = parsed.predicate[80:].split()
+    if len(tokens) > 2:
+        append_line_error(bill, parsed, line_index, "number of tokens exceded")
 
 def parse_200105(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 2)
 
 def parse_200200(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
-def parse_200201(bill, line_index, parsed):
-    pass
-
-def parse_200202(bill, line_index, parsed):
-    pass
-
-def parse_200203(bill, line_index, parsed):
-    pass
-
-def parse_200204(bill, line_index, parsed):
-    pass
+parse_200201 = partial(generic_predicate, field_name="200201")
+parse_200202 = partial(generic_predicate, field_name="200202")
+parse_200203 = partial(generic_predicate, field_name="200203")
+parse_200204 = partial(generic_predicate, field_name="200204")
 
 def parse_200205(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 2)
 
 def parse_200206(bill, line_index, parsed):
-    pass
+    tokens = parsed.predicate[86:].split()
+    tokens_length = len(tokens)
+    if tokens_length > 0:
+        if tokens_length > 2:
+            append_line_error(bill, parsed, line_index, "exceeded tokens")
+        
 
 def parse_200207(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 2)
 
 def parse_200300(bill, line_index, parsed):
     pass
