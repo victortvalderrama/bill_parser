@@ -82,7 +82,7 @@ def main():
 
     args = parser.parse_args()
 
-    if not args.file  or not args.billtype:
+    if not args.file or not args.billtype:
         parser.print_help()
         exit()
 
@@ -94,13 +94,16 @@ def main():
     parse_type = args.billtype
     
     fp = file_stream_reader(filename)
-    bills = parse(fp, [7,8,30], parse_type=parse_type)
-
+    if billtype == "fixed": 
+        bills = parse(fp, [7,8,30], parse_type=parse_type)
+    elif billtype == "mobile":
+        bills = parse(fp, parse_type=parse_type)
+        
     print_errors(bills)
     # print_bill_ranges(bills)
 
-    # bad_lines = get_bad_lines(bills)
-    # purge_bad_lines(filename, bad_lines, output_route)
+    bad_lines = get_bad_lines(bills)
+    purge_bad_lines(filename, bad_lines, output_route)
 
 
 if __name__ == '__main__':

@@ -20,6 +20,7 @@ def maximum_mobile_tokens(line_index, parsed, bill, split_len):
 
 def parse_100000(bill, line_index, parsed):
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
+    print(parsed.predicate)
 
 parse_100001 = partial(generic_predicate, field_name="doctype")
 

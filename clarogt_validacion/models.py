@@ -32,7 +32,7 @@ Line = namedtuple(
 
 FIXED_SECTION_NAME_MAP = {
     "0100000": "START DELIMITER",
-    "0800100": " MIDDLE JOKER",
+    # "0800100": " MIDDLE JOKER",
     "5000100": "END DELIMITER",
 }
 
