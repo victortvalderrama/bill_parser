@@ -243,6 +243,8 @@ parse_200204 = partial(generic_predicate, field_name="200204")
 
 def parse_200205(bill, line_index, parsed):
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 2)
+    # if len(tokens) != 2:
+    #     append_line_error(bill, parsed, line_index, "not 2 tokens")
 
 def parse_200206(bill, line_index, parsed):
     tokens = parsed.predicate[86:].split()
@@ -252,89 +254,87 @@ def parse_200206(bill, line_index, parsed):
             append_line_error(bill, parsed, line_index, "exceeded tokens")
         
 
-def parse_200207(bill, line_index, parsed):
-    tokens = maximum_mobile_tokens(line_index, parsed, bill, 2)
+parse_200207 = partial(generic_predicate, field_name="200207_totalPAgar")
 
-def parse_200300(bill, line_index, parsed):
-    pass
-
-def parse_200301(bill, line_index, parsed):
-    pass
-
-def parse_200302(bill, line_index, parsed):
-    pass
-
-def parse_200303(bill, line_index, parsed):
-    pass
-
-def parse_200304(bill, line_index, parsed):
-    pass
+parse_200300 = partial(generic_predicate, field_name="200300_seccion")
+parse_200301 = partial(generic_predicate, field_name="200301_codigo_Cliente")
+parse_200302 = partial(generic_predicate, field_name="200302_telefono")
+parse_200303 = partial(generic_predicate, field_name="200303_razonSocial")
+parse_200304 = partial(generic_predicate, field_name="200304_contrato")
 
 def parse_200305(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 2)
 
 def parse_200306(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 2)
 
-def parse_200307(bill, line_index, parsed):
-    pass
+parse_200307 = partial(generic_predicate, field_name="200307_subPlanSeccion")
+parse_200308 = partial(generic_predicate, field_name="200308_totalPagar")
 
-def parse_200308(bill, line_index, parsed):
-    pass
+parse_200400 = partial(generic_predicate, field_name="200400_seccion")
 
-def parse_200400(bill, line_index, parsed):
-    pass
-
-def parse_200500(bill, line_index, parsed):
-    pass
+parse_200500 = partial(generic_predicate, field_name="200500_seccion")
 
 def parse_200503(bill, line_index, parsed):
-    pass
+    tokens = parsed.predicate[80:].split() 
+    if len(tokens) != 5:
+        append_line_error(bill, parsed, line_index, "not 5 tokens")
 
-def parse_200600(bill, line_index, parsed):
-    pass
+parse_200600 = partial(generic_predicate, field_name="200600_seccion")
 
 def parse_200603(bill, line_index, parsed):
-    pass
+    tokens = parsed.predicate[80:].split() 
+    if len(tokens) != 5:
+        append_line_error(bill, parsed, line_index, "not 5 tokens")
 
-def parse_300000(bill, line_index, parsed):
-    pass
+parse_300000 = partial(generic_predicate, field_name="300000_seccion")
 
 def parse_300100(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
-def parse_300101(bill, line_index, parsed):
-    pass
+parse_300101 = partial(generic_predicate, field_name="300101_detalleConsumos")
 
-def parse_300102(bill, line_index, parsed):
-    pass
+parse_300102 = partial(generic_predicate, field_name="300102_detalleConsumos")
 
 def parse_300103(bill, line_index, parsed):
-    pass
+    tokens = maximum_mobile_tokens(line_index, parsed, bill, 12)
 
 def parse_300104(bill, line_index, parsed):
-    pass
+    range_list = [(40,65),(123,149)]
+    tokens = remove_string_segments(parsed.predicate, range_list)
+    if len(tokens) % 5 != 0:
+        print(tokens)
+        append_line_error(bill, parsed, line_index, "invalid number of rows, can't divide by 5")
 
 def parse_300105(bill, line_index, parsed):
-    pass
+    tokens = parsed.predicate[25:].split()
+    if len(tokens) > 2:
+        append_line_error(bill, parsed, line_index, "more than 2 tokens")
 
-def parse_400000(bill, line_index, parsed):
-    pass
+parse_400000 = partial(generic_predicate, field_name="400000_seccion")
 
 def parse_400001(bill, line_index, parsed):
-    pass
+    tokens = parsed.predicate.split()
+    if len(tokens) > 2:
+        append_line_error(bill, parsed, line_index, "more than 2 tokens")
 
-def parse_400002(bill, line_index, parsed):
-    pass
+parse_400002 = partial(generic_predicate, field_name="400002_ajusteSeccion")
 
 def parse_400003(bill, line_index, parsed):
-    pass
+    tokens = parsed.predicate.split()
+    if len(tokens) != 4:
+        append_line_error(bill, parsed, line_index, "not 4 tokens")
 
 def parse_400004(bill, line_index, parsed):
-    pass
+    range_list = [(24,54),(82,-1)]
+    tokens = remove_string_segments(parsed.predicate, range_list)
+    if len(tokens) != 3:
+        append_line_error(bill, parsed, line_index, "not 3 tokens")
 
 def parse_400005(bill, line_index, parsed):
-    pass
+    range_list = [(1,20)]
+    tokens = remove_string_segments(parsed.predicate, range_list)
+    if len(tokens) != 2:
+        append_line_error(bill, parsed, line_index, "not 2 tokens")
 
-def parse_400006(bill, line_index, parsed):
-    pass
+parse_400006 = partial(generic_predicate, field_name="400006_NCRE")
