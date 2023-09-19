@@ -94,9 +94,9 @@ def main():
     parse_type = args.billtype
     
     fp = file_stream_reader(filename)
-    if billtype == "fixed": 
+    if parse_type == "fixed": 
         bills = parse(fp, [7,8,30], parse_type=parse_type)
-    elif billtype == "mobile":
+    elif parse_type == "mobile":
         bills = parse(fp, parse_type=parse_type)
         
     print_errors(bills)
