@@ -18,7 +18,6 @@ def maximum_mobile_tokens(line_index, parsed, bill, split_len):
 
 def parse_100000(bill, line_index, parsed):
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
-    print(parsed.predicate)
 
 parse_100001 = partial(generic_predicate, field_name="doctype")
 
@@ -299,8 +298,9 @@ def parse_300103(bill, line_index, parsed):
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 12)
 
 def parse_300104(bill, line_index, parsed):
-    range_list = [(40,65),(123,149)]
-    tokens = remove_string_segments(parsed.predicate, range_list)
+    range_list = [(40,66),(123,149)]
+    pipe_removed = parsed.predicate.replace("|", " ")
+    tokens = remove_string_segments(pipe_removed, range_list)
     if len(tokens) % 5 != 0:
         print(tokens)
         append_line_error(bill, parsed, line_index, "invalid number of rows, can't divide by 5")
