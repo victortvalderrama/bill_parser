@@ -6,10 +6,6 @@ from ioutils import file_stream_reader
 from helpers import *
 import re
 
-# SECTION 10000
-def strip_mobile(string):
-    return string[28:]
-
 def maximum_mobile_tokens(line_index, parsed, bill, split_len):
     string = parsed.predicate[28:]
     tokens = string.split()
@@ -17,6 +13,8 @@ def maximum_mobile_tokens(line_index, parsed, bill, split_len):
         append_line_error(bill, parsed, line_index, "exceeded tokens")
         return None
     return  tokens
+
+# SECTION 10000
 
 def parse_100000(bill, line_index, parsed):
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)

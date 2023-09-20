@@ -76,7 +76,6 @@ def load_line(bill, line_index, parsed, parse_type):
 
 
 def parse_fixed(iterable, excluded_sections=None, parse_type=None):
-    
     BillModel = FixedBill
     
     if excluded_sections is None:
@@ -128,7 +127,7 @@ def parse_mobile(iterable, excluded_sections=None, parse_type=None):
     for index, line in enumerate(iterable):
         line_index = index
 
-        parsed = tokenize_fixed(line)
+        parsed = tokenize_mobile(line)
         curr_section = int(parsed.section)
         
         if (
