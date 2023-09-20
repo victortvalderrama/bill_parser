@@ -370,19 +370,19 @@ def parse_1600200(bill, line_index, parsed):
     
 def parse_1600300(bill, line_index, parsed):
     tokens = parsed.predicate[76:].split() 
-    if len(tokens) != 7:
+    if len(tokens) > 7:
         print(tokens)
-        append_line_error(bill, parsed, line_index, "invalid number of tokens")
+        append_line_error(bill, parsed, line_index, "invalid, more than 7 tokens")
 
 def parse_1600400(bill, line_index, parsed):
     tokens = parsed.predicate[76:].split()
-    if len(tokens) != 6:
-        append_line_error(bill, parsed, line_index, "invalid number of tokens")
+    if len(tokens) > 6:
+        append_line_error(bill, parsed, line_index, "invalid, more than 6 tokens")
     
 def parse_1600500(bill, line_index, parsed):
     tokens = parsed.predicate[102:].split()
-    if len(tokens) != 2:
-        append_line_error(bill, parsed, line_index, "invalid number of tokens")
+    if len(tokens) > 2:
+        append_line_error(bill, parsed, line_index, "invalid, more than 2 tokens")
     
 # 3000000
 
