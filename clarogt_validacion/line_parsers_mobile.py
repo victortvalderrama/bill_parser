@@ -14,6 +14,13 @@ def maximum_mobile_tokens(line_index, parsed, bill, split_len):
         return None
     return  tokens
 
+def parse_by_consumption_detail(line_index, parsed, bill, range_list, divide):
+    pipe_removed = parsed.predicate.replace("|", " ")
+    detail = bill._300102_predicate.strip()
+    tokens = remove_string_segments(pipe_removed, range_list)
+    if len(tokens) % divide != 0:
+        print(tokens)
+        append_line_error(bill, parsed, line_index, f"invalid number of tokens for {detail} can't divide by {divide}")
 # SECTION 10000
 
 def parse_100000(bill, line_index, parsed):
@@ -275,8 +282,8 @@ parse_200500 = partial(generic_predicate, field_name="200500_seccion")
 
 def parse_200503(bill, line_index, parsed):
     tokens = parsed.predicate[80:].split() 
-    if len(tokens) != 5:
-        append_line_error(bill, parsed, line_index, "not 5 tokens")
+    if len(tokens) > 8 :
+        append_line_error(bill, parsed, line_index, "more than 8 tokens")
 
 parse_200600 = partial(generic_predicate, field_name="200600_seccion")
 
@@ -292,18 +299,40 @@ def parse_300100(bill, line_index, parsed):
 
 parse_300101 = partial(generic_predicate, field_name="300101_detalleConsumos")
 
-parse_300102 = partial(generic_predicate, field_name="300102_detalleConsumos")
-
+def parse_300102(bill, line_index, parsed):
+    bill._300102_predicate = parsed.predicate.strip()
+    
 def parse_300103(bill, line_index, parsed):
-    tokens = maximum_mobile_tokens(line_index, parsed, bill, 12)
+    tokens = parsed.predicate[1:].split()
 
 def parse_300104(bill, line_index, parsed):
-    range_list = [(40,66),(123,149)]
-    pipe_removed = parsed.predicate.replace("|", " ")
-    tokens = remove_string_segments(pipe_removed, range_list)
-    if len(tokens) % 5 != 0:
-        print(tokens)
-        append_line_error(bill, parsed, line_index, "invalid number of rows, can't divide by 5")
+    detail = bill._300102_predicate.strip()
+    if detail == "2CLARO ENTRETENIMIENTO":
+        parse_by_consumption_detail(line_index, parsed, bill, [(20,66),(103,148)], 2)
+        
+    elif detail == "2DETALLE DE LLAMADAS SALIENTES LOCAL":
+        parse_by_consumption_detail(line_index, parsed, bill, [(40,65),(127,153)], 5)
+    
+    elif detail == "2DETALLE DE MENSAJES DE TEXTO LOCAL":
+        parse_by_consumption_detail(line_index, parsed, bill, [(40,65),(123,148)], 5)
+        
+    elif detail == "2DETALLE DE LLAMADAS EN ROAMING SIN FRONTERAS":
+        parse_by_consumption_detail(line_index, parsed, bill, [(20,138)], 2)
+    
+    elif detail == "2DETALLE DE MENSAJES DE TEXTO EN ROAMING SIN FRONTERAS":
+        parse_by_consumption_detail(line_index, parsed, bill, [(40,66),(123,149)], 5)
+    
+    elif detail == "2DETALLE DE LLAMADAS DE LARGA DISTANCIA INTERNACIONAL SIN FRONTERAS":
+        parse_by_consumption_detail(line_index, parsed, bill, [(40,64),(123,146)], 5)
+    
+    elif detail == "2DETALLE DE LLAMADAS DE LARGA DISTANCIA INTERNACIONAL":
+        parse_by_consumption_detail(line_index, parsed, bill, [(40,64),(123,147)], 5)
+    
+    # elif detail == "2DETALLE DE LLAMADAS EN ROAMING":
+        
+    
+    else:
+        append_line_error(bill, parsed, line_index, "not implemented consumption detail")
 
 def parse_300105(bill, line_index, parsed):
     tokens = parsed.predicate[25:].split()
