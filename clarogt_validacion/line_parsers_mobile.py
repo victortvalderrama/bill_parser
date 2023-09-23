@@ -279,9 +279,14 @@ parse_200400 = partial(generic_predicate, field_name="200400_seccion")
 parse_200500 = partial(generic_predicate, field_name="200500_seccion")
 
 def parse_200503(bill, line_index, parsed):
-    tokens = parsed.predicate[80:].split() 
-    if len(tokens) > 8 :
-        append_line_error(bill, parsed, line_index, "more than 8 tokens")
+    range_list = [(20, 85)]
+    tokens = remove_string_segments(parsed.predicate, range_list)
+    description = parsed.predicate[20:85]
+    if description.strip() != "":
+        tokens.append(parsed.predicate[20:85])
+        
+    if len(tokens) != 11:
+        append_line_error(bill, parsed, line_index, f"missing tokens, expecting 11\n     tokens: {tokens}")
 
 parse_200600 = partial(generic_predicate, field_name="200600_seccion")
 
@@ -318,7 +323,7 @@ def parse_300104(bill, line_index, parsed):
         parse_by_consumption_detail(line_index, parsed, bill, [(20,138)], 2)
     
     elif detail == "2DETALLE DE MENSAJES DE TEXTO EN ROAMING SIN FRONTERAS":
-        parse_by_consumption_detail(line_index, parsed, bill, [(40,66),(123,149)], 5)
+        parse_by_consumption_detail(line_index, parsed, bill, [(40,65),(123,149)], 5)
     
     elif detail == "2DETALLE DE LLAMADAS DE LARGA DISTANCIA INTERNACIONAL SIN FRONTERAS":
         parse_by_consumption_detail(line_index, parsed, bill, [(40,64),(123,146)], 5)
@@ -328,7 +333,28 @@ def parse_300104(bill, line_index, parsed):
     
     elif detail == "2DETALLE DE MENSAJES DE TEXTO EN ROAMING":
         parse_by_consumption_detail(line_index, parsed, bill, [(40,65),(123,148)], 5)
+        
+    elif detail == "2PRODUCTIVIDAD":
+        parse_by_consumption_detail(line_index, parsed, bill, [(20,65),(103,148)], 4)
     
+    elif detail == "2DETALLE DE LLAMADAS POR COBRAR":
+        parse_by_consumption_detail(line_index, parsed, bill, [(40,65),(127,153)], 5)
+    
+    elif detail == "2DETALLE DE RECARGAS PROGRAMADAS POR EVENTO":
+        parse_by_consumption_detail(line_index, parsed, bill, [(39,65),(122,148)], 5)
+    
+    elif detail == "2SERVICIOS VARIOS":
+        parse_by_consumption_detail(line_index, parsed, bill, [(20,65),(103,148)], 4)
+    
+    elif detail == "2DETALLE DE LLAMADAS ILIMITADAS":
+        parse_by_consumption_detail(line_index, parsed, bill, [(40,65),(127,153)], 5)
+        
+    elif detail.startswith("2DETALLE DE SUSCRIPCI"):
+        parse_by_consumption_detail(line_index, parsed, bill, [(20,65),(103,148)], 4)
+    
+    elif detail.startswith("2DETALLE DE NAVEGACI"):
+        parse_by_consumption_detail(line_index, parsed, bill, [(20,50),(103,133)], 4)
+        
     elif detail == "2DETALLE DE LLAMADAS EN ROAMING":
         incoming = parsed.predicate[40:138].strip().split()
         if incoming[0] == "Llamada":
@@ -336,21 +362,6 @@ def parse_300104(bill, line_index, parsed):
         else:
             divide = 5
         parse_by_consumption_detail(line_index, parsed, bill, [(40,138)], divide)
-        
-    elif detail == "2PRODUCTIVIDAD":
-        parse_by_consumption_detail(line_index, parsed, bill, [(20,65),(103,148)], 4)
-    
-    elif detail == "2DETALLE DE LLAMADAS POR COBRAR":
-        parse_by_consumption_detail(line_index, parsed, bill, [(40,66),(127,153)], 5)
-        
-    elif detail.startswith("2DETALLE DE SUSCRIPCI"):
-        parse_by_consumption_detail(line_index, parsed, bill, [(20,65),(103,148)], 4)
-    
-    elif detail == "2DETALLE DE RECARGAS PROGRAMADAS POR EVENTO":
-        parse_by_consumption_detail(line_index, parsed, bill, [(39,65),(122,148)], 5)
-    
-    elif detail == "2SERVICIOS VARIOS":
-        parse_by_consumption_detail(line_index, parsed, bill, [(20,65),(103,148)], 4)
         
     else:
         append_line_error(bill, parsed, line_index, f"not implemented consumption detail {detail}")
