@@ -279,14 +279,38 @@ parse_200400 = partial(generic_predicate, field_name="200400_seccion")
 parse_200500 = partial(generic_predicate, field_name="200500_seccion")
 
 def parse_200503(bill, line_index, parsed):
-    range_list = [(20, 85)]
-    tokens = remove_string_segments(parsed.predicate, range_list)
-    description = parsed.predicate[20:85]
-    if description.strip() != "":
-        tokens.append(parsed.predicate[20:85])
+    # range_list = [(20, 85)]
+    nohyphen = parsed.predicate.replace("-", " ")
+    line = nohyphen[1:]
+    values = line[89:].split('Q')
+    
+    expected_tokens = 10
+    if values[0].strip() == "":
+        expected_tokens -= 1
         
-    if len(tokens) != 11:
-        append_line_error(bill, parsed, line_index, f"missing tokens, expecting 11\n     tokens: {tokens}")
+    for char in line:
+        if char.isalpha():
+            description_index = line.index(char)
+            break
+        
+    description_range_list = [(description_index, 85)]
+    description = line[description_index:85]
+    
+    first_tokens = line[:description_index].split()
+    if len(first_tokens) == 1:
+        expected_tokens -= 1
+    
+    tokens = remove_string_segments(line, description_range_list)
+    if description.strip() != "":
+        tokens.append(description.strip())
+    # else:
+    #     append_line_error(bill, parsed, line_index, "missing description token")
+        
+    if len(tokens) != expected_tokens:
+        append_line_error(bill, parsed, line_index, 
+                            f"missing tokens, expecting {expected_tokens}, given {len(tokens)}\n \
+                           tokens: {tokens}")
+        
 
 parse_200600 = partial(generic_predicate, field_name="200600_seccion")
 
