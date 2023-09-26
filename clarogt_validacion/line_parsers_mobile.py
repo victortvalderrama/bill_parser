@@ -451,17 +451,18 @@ def parse_300100(bill, line_index, parsed):
     bill._300000_hasdetails = True
 
 def parse_300101(bill, line_index, parsed):
-    bill._300100_exists = True
+    bill._300101_exists = True
     bill._300000_hasdetails = True
 
 def parse_300102(bill, line_index, parsed):
     bill._300102_predicate = parsed.predicate.strip()
-    bill._300100_exists = True
+    
+    bill._300102_exists = True
     bill._300000_hasdetails = True
     
 def parse_300103(bill, line_index, parsed):
     # tokens = parsed.predicate[1:].split()
-    bill._300100_exists = True
+    bill._300103_exists = True
     bill._300000_hasdetails = True
 
 def parse_300104(bill, line_index, parsed):
@@ -522,7 +523,7 @@ def parse_300104(bill, line_index, parsed):
     # else:
     #     append_line_error(bill, parsed, line_index, f"not implemented consumption detail {detail}")
         
-    bill._300100_exists = True
+    bill._300104_exists = True
     bill._300000_hasdetails = True
 
 def parse_300105(bill, line_index, parsed):
@@ -530,7 +531,7 @@ def parse_300105(bill, line_index, parsed):
     if len(tokens) > 2:
         append_line_error(bill, parsed, line_index, "more than 2 tokens")
     
-    bill._300100_exists = True
+    bill._300105_exists = True
     bill._300000_hasdetails = True
 
 def parse_400000(bill, line_index, parsed):
