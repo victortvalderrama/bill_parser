@@ -20,6 +20,15 @@ def parse_by_consumption_detail(line_index, parsed, bill, range_list, divide):
     tokens = remove_string_segments(pipe_removed, range_list)
     if len(tokens) % divide != 0:
         append_line_error(bill, parsed, line_index, f"invalid number of tokens for {detail} can't divide by {divide} \n                         tokens: {tokens}")
+
+def get_expected_position(bill, line_index, parsed, expected):
+    expected = expected
+    sequence = parsed.predicate[0]
+    if sequence != expected:
+        append_line_error(bill, parsed, line_index,
+                          f"error at parsing predicate sequence, \n\
+                          expecting: {expected}, got: {sequence}")
+        
 # SECTION 10000
 
 def parse_100000(bill, line_index, parsed):
@@ -337,42 +346,57 @@ def parse_200300(bill, line_index,parsed):
     bill._200306_exists = False
     bill._200307_exists = False
     bill._200308_exists = False
-    
     bill._200300_hasdetails = False
     
 def parse_200301(bill, line_index, parsed):
     bill._200301_exists = True
     bill._200300_hasdetails = True
+    
+    get_expected_position(bill, line_index, parsed, "1")
 
 def parse_200302(bill, line_index, parsed):
     bill._200302_exists = True
     bill._200300_hasdetails = True
+    
+    get_expected_position(bill, line_index, parsed, "2")
 
 def parse_200303(bill, line_index, parsed):
     bill._200303_exists = True
     bill._200300_hasdetails = True
+    
+    get_expected_position(bill, line_index, parsed, "3")
 
 def parse_200304(bill, line_index, parsed):
     bill._200304_exists = True
     bill._200300_hasdetails = True
+    
+    get_expected_position(bill, line_index, parsed, "4")
 
 def parse_200305(bill, line_index, parsed):
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 2)
     bill._200305_exists = True
     bill._200300_hasdetails = True
+    
+    get_expected_position(bill, line_index, parsed, "5")
 
 def parse_200306(bill, line_index, parsed):
     tokens = parsed.predicate[80:].split()
     bill._200306_exists = True
     bill._200300_hasdetails = True
     
+    get_expected_position(bill, line_index, parsed, "6")
+    
 def parse_200307(bill, line_index, parsed):
     bill._200307_exists = True
     bill._200300_hasdetails = True
     
+    get_expected_position(bill, line_index, parsed, "7")
+    
 def parse_200308(bill, line_index, parsed):
     bill._200308_exists = True
     bill._200300_hasdetails = True
+    
+    get_expected_position(bill, line_index, parsed, "8")
     
 def parse_200400(bill,line_index, parsed):
     if bill._200300_hasdetails:
