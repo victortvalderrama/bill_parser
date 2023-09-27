@@ -19,15 +19,8 @@ def parse_by_consumption_detail(line_index, parsed, bill, range_list, divide):
     detail = bill._300102_predicate.strip()
     tokens = remove_string_segments(pipe_removed, range_list)
     if len(tokens) % divide != 0:
-        append_line_error(bill, parsed, line_index, f"invalid number of tokens for {detail} can't divide by {divide} \n                         tokens: {tokens}")
-
-def get_expected_position(bill, line_index, parsed, expected):
-    expected = expected
-    sequence = parsed.predicate[0]
-    if sequence != expected:
-        append_line_error(bill, parsed, line_index,
-                          f"error at parsing predicate sequence, \n\
-                          expecting: {expected}, got: {sequence}")
+        append_line_error(bill, parsed, line_index, f"invalid number of tokens for {detail} can't divide by {divide} \n\
+            tokens: {tokens}")
 
 def find_missing_values(bill, line_index, parsed ,expected, details):
     if details:
@@ -303,6 +296,9 @@ def parse_200207(bill, line_index, parsed):
     bill._200200_list.append(parsed.predicate[0])
 
 def parse_200300(bill, line_index,parsed):
+    bill._200305 = False
+    bill._200306 = False
+    bill._200307 = False
     expected = ["1", "2", "3", "4", "5", "6", "7"]
     details = bill._200200_list
     find_missing_values(bill, line_index, parsed, expected, details)
@@ -311,39 +307,40 @@ def parse_200300(bill, line_index,parsed):
     
 def parse_200301(bill, line_index, parsed):
     bill._200300_list.append(parsed.predicate[0])
-    get_expected_position(bill, line_index, parsed, "1")
 
 def parse_200302(bill, line_index, parsed):
     bill._200300_list.append(parsed.predicate[0])
-    get_expected_position(bill, line_index, parsed, "2")
 
 def parse_200303(bill, line_index, parsed):
     bill._200300_list.append(parsed.predicate[0])
-    get_expected_position(bill, line_index, parsed, "3")
 
 def parse_200304(bill, line_index, parsed):
     bill._200300_list.append(parsed.predicate[0])
-    get_expected_position(bill, line_index, parsed, "4")
 
 def parse_200305(bill, line_index, parsed):
-    tokens = maximum_mobile_tokens(line_index, parsed, bill, 2)
-
-    bill._200300_list.append(parsed.predicate[0])    
-    get_expected_position(bill, line_index, parsed, "5")
-
-def parse_200306(bill, line_index, parsed):
-    tokens = parsed.predicate[80:].split()
-    
     bill._200300_list.append(parsed.predicate[0])
-    get_expected_position(bill, line_index, parsed, "6")
+    bill._200305 = True
+    
+def parse_200306(bill, line_index, parsed):
+    bill._200300_list.append(parsed.predicate[0])
+    
+    if bill._200305 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
+        
+    bill._200306 = True
     
 def parse_200307(bill, line_index, parsed):
     bill._200300_list.append(parsed.predicate[0])
-    get_expected_position(bill, line_index, parsed, "7")
+    
+    if bill._200306 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
+        
+    bill._200307 = True
     
 def parse_200308(bill, line_index, parsed):
     bill._200300_list.append(parsed.predicate[0])
-    get_expected_position(bill, line_index, parsed, "8")
+    if bill._200305 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
     
 def parse_200400(bill,line_index, parsed):
     expected = ["1", "2", "3", "4", "5", "6", "7", "8"]
@@ -400,22 +397,18 @@ def parse_300100(bill, line_index, parsed):
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
     
     bill._300000_list.append(parsed.predicate[0])
-    get_expected_position(bill, line_index, parsed, "0")
 
 def parse_300101(bill, line_index, parsed):
     bill._300000_list.append(parsed.predicate[0])
-    get_expected_position(bill, line_index, parsed, "1")
 
 def parse_300102(bill, line_index, parsed):
     bill._300102_predicate = parsed.predicate.strip()
     
     bill._300000_list.append(parsed.predicate[0])
-    get_expected_position(bill, line_index, parsed, "2")
     
 def parse_300103(bill, line_index, parsed):
     # tokens = parsed.predicate[1:].split()
     bill._300000_list.append(parsed.predicate[0])
-    get_expected_position(bill, line_index, parsed, "3")
 
 def parse_300104(bill, line_index, parsed):
     detail = bill._300102_predicate.strip()
@@ -476,7 +469,6 @@ def parse_300104(bill, line_index, parsed):
     #     append_line_error(bill, parsed, line_index, f"not implemented consumption detail {detail}")
         
     bill._300000_list.append(parsed.predicate[0])
-    get_expected_position(bill, line_index, parsed, "4")
 
 def parse_300105(bill, line_index, parsed):
     tokens = parsed.predicate[25:].split()
@@ -484,7 +476,6 @@ def parse_300105(bill, line_index, parsed):
         append_line_error(bill, parsed, line_index, "more than 2 tokens")
     
     bill._300000_list.append(parsed.predicate[0])
-    get_expected_position(bill, line_index, parsed, "5")
 
 def parse_400000(bill, line_index, parsed):
     expected = ["1", "2", "3", "4", "5"]
@@ -499,11 +490,9 @@ def parse_400001(bill, line_index, parsed):
         append_line_error(bill, parsed, line_index, "more than 2 tokens")
         
     bill._400000_list.append(parsed.predicate[0])
-    get_expected_position(bill, line_index, parsed, "1")
 
 def parse_400002(bill, line_index, parsed):
     bill._400000_list.append(parsed.predicate[0])
-    get_expected_position(bill, line_index, parsed, "2")
 
 def parse_400003(bill, line_index, parsed):
     tokens = parsed.predicate.split()
@@ -511,7 +500,6 @@ def parse_400003(bill, line_index, parsed):
         append_line_error(bill, parsed, line_index, "not 4 tokens")
     
     bill._400000_list.append(parsed.predicate[0])
-    get_expected_position(bill, line_index, parsed, "3")
 
 def parse_400004(bill, line_index, parsed):
     range_list = [(24,54),(82,150)]
@@ -520,7 +508,6 @@ def parse_400004(bill, line_index, parsed):
         append_line_error(bill, parsed, line_index, "not 3 tokens")
     
     bill._400000_list.append(parsed.predicate[0])
-    get_expected_position(bill, line_index, parsed, "4")
 
 def parse_400005(bill, line_index, parsed):
     range_list = [(1,20)]
@@ -529,11 +516,9 @@ def parse_400005(bill, line_index, parsed):
         append_line_error(bill, parsed, line_index, "not 2 tokens")
         
     bill._400000_list.append(parsed.predicate[0])
-    get_expected_position(bill, line_index, parsed, "5")
     
 def parse_400006(bill, line_index, parsed):
     bill._400000_list.append(parsed.predicate[0])
-    get_expected_position(bill, line_index, parsed, "6")
     
 def parse_900000(bill, line_index, parsed):
     expected = ["1", "2", "3", "4", "5", "6"]
