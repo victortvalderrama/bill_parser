@@ -28,6 +28,17 @@ def get_expected_position(bill, line_index, parsed, expected):
         append_line_error(bill, parsed, line_index,
                           f"error at parsing predicate sequence, \n\
                           expecting: {expected}, got: {sequence}")
+
+def find_missing_values(bill, line_index, parsed ,expected, details):
+    if details:
+        expected_set = set(map(str, expected))
+        details_set = set(map(str, details))
+
+        missing_details = expected_set - details_set
+        missing_details_list = list(missing_details)
+        if missing_details_list:
+            append_line_error(bill, parsed, line_index, f"missing detail sections: {missing_details_list} \n\
+                expecting {expected}")
         
 # SECTION 10000
 
@@ -230,84 +241,54 @@ def parse_200003(bill, line_index, parsed):
 parse_200004 = partial(generic_predicate, field_name="20004_total")
 
 def parse_200100(bill, line_index, parsed):
-    bill._200101_exists = False
-    bill._200102_exists = False
-    bill._200103_exists = False
-    bill._200104_exists = False
-    bill._200105_exists = False
-    bill._200100_hasdetails = False
+    bill._200100_list = []
 
 def parse_200101(bill, line_index, parsed):
-    bill._200101_exists = True
-    bill._200100_hasdetails = True
+    bill._200100_list.append(parsed.predicate[0])
     
 def parse_200102(bill, line_index, parsed):
-    bill._200102_exists = True
-    bill._200100_hasdetails = True
+    bill._200100_list.append(parsed.predicate[0])
 
 def parse_200103(bill, line_index, parsed):
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 2)
 
-    bill._200103_exists = True
-    bill._200100_hasdetails = True
+    bill._200100_list.append(parsed.predicate[0])
 
 def parse_200104(bill, line_index, parsed):
     tokens = parsed.predicate[80:].split()
     if len(tokens) > 2:
         append_line_error(bill, parsed, line_index, "number of tokens exceded")
-    
-    bill._200104_exists = True
-    bill._200100_hasdetails = True
+
+    bill._200100_list.append(parsed.predicate[0])
 
 def parse_200105(bill, line_index, parsed):
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 2)
-    
-    bill._200105_exists = True
-    bill._200100_hasdetails = True
+
+    bill._200100_list.append(parsed.predicate[0])
 
 def parse_200200(bill, line_index, parsed):
-    if bill._200100_hasdetails:
-        details = {
-            "200101": bill._200101_exists,
-            "200102": bill._200102_exists,
-            "200103": bill._200103_exists,
-            "200104": bill._200104_exists,
-            "200105": bill._200105_exists,
-        }
-        details_list = [key for key, value in details.items() if not value]
-        if details_list:
-            append_line_error(bill, parsed, line_index, f"missing details sections {details_list}")
+    expected = ["1", "2", "3", "4", "5"]
+    details = bill._200100_list
+    find_missing_values(bill, line_index, parsed, expected, details)
     
-    bill._200201_exists = False
-    bill._200202_exists = False
-    bill._200203_exists = False
-    bill._200204_exists = False
-    bill._200205_exists = False
-    bill._200206_exists = False
-    bill._200207_exists = False
-    bill._200200_hasdetails = False
+    bill._200200_list = []
 
 def parse_200201(bill, line_index, parsed):
-    bill._200201_exists = True
-    bill._200200_hasdetails = True
+    bill._200200_list.append(parsed.predicate[0])
 
 def parse_200202(bill, line_index, parsed):
-    bill._200202_exists = True
-    bill._200200_hasdetails = True
+    bill._200200_list.append(parsed.predicate[0])
 
 def parse_200203(bill, line_index, parsed):
-    bill._200203_exists = True
-    bill._200200_hasdetails = True
+    bill._200200_list.append(parsed.predicate[0])
 
 def parse_200204(bill, line_index, parsed):
-    bill._200204_exists = True
-    bill._200200_hasdetails = True
+    bill._200200_list.append(parsed.predicate[0])
 
 def parse_200205(bill, line_index, parsed):
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 2)
     
-    bill._200205_exists = True
-    bill._200200_hasdetails = True
+    bill._200200_list.append(parsed.predicate[0])
 
 def parse_200206(bill, line_index, parsed):
     tokens = parsed.predicate[86:].split()
@@ -316,104 +297,58 @@ def parse_200206(bill, line_index, parsed):
         if tokens_length > 2:
             append_line_error(bill, parsed, line_index, "exceeded tokens")
             
-    bill._200206_exists = True
-    bill._200200_hasdetails = True
+    bill._200200_list.append(parsed.predicate[0])
 
 def parse_200207(bill, line_index, parsed):
-    bill._200207_exists = True
-    bill._200200_hasdetails = True
+    bill._200200_list.append(parsed.predicate[0])
 
 def parse_200300(bill, line_index,parsed):
-    if bill._200200_hasdetails:
-        details = {
-            "200201": bill._200201_exists,
-            "200202": bill._200202_exists,
-            "200203": bill._200203_exists,
-            "200204": bill._200204_exists,
-            "200205": bill._200205_exists,
-            "200206": bill._200206_exists,
-            "200207": bill._200207_exists,
-        }
-        details_list = [key for key, value in details.items() if not value]
-        if details_list:
-            append_line_error(bill, parsed, line_index, f"missing details sections {details_list}")
+    expected = ["1", "2", "3", "4", "5", "6", "7"]
+    details = bill._200200_list
+    find_missing_values(bill, line_index, parsed, expected, details)
     
-    bill._200301_exists = False
-    bill._200302_exists = False
-    bill._200303_exists = False
-    bill._200304_exists = False
-    bill._200305_exists = False
-    bill._200306_exists = False
-    bill._200307_exists = False
-    bill._200308_exists = False
-    bill._200300_hasdetails = False
+    bill._200300_list = []
     
 def parse_200301(bill, line_index, parsed):
-    bill._200301_exists = True
-    bill._200300_hasdetails = True
-    
+    bill._200300_list.append(parsed.predicate[0])
     get_expected_position(bill, line_index, parsed, "1")
 
 def parse_200302(bill, line_index, parsed):
-    bill._200302_exists = True
-    bill._200300_hasdetails = True
-    
+    bill._200300_list.append(parsed.predicate[0])
     get_expected_position(bill, line_index, parsed, "2")
 
 def parse_200303(bill, line_index, parsed):
-    bill._200303_exists = True
-    bill._200300_hasdetails = True
-    
+    bill._200300_list.append(parsed.predicate[0])
     get_expected_position(bill, line_index, parsed, "3")
 
 def parse_200304(bill, line_index, parsed):
-    bill._200304_exists = True
-    bill._200300_hasdetails = True
-    
+    bill._200300_list.append(parsed.predicate[0])
     get_expected_position(bill, line_index, parsed, "4")
 
 def parse_200305(bill, line_index, parsed):
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 2)
-    bill._200305_exists = True
-    bill._200300_hasdetails = True
-    
+
+    bill._200300_list.append(parsed.predicate[0])    
     get_expected_position(bill, line_index, parsed, "5")
 
 def parse_200306(bill, line_index, parsed):
     tokens = parsed.predicate[80:].split()
-    bill._200306_exists = True
-    bill._200300_hasdetails = True
     
+    bill._200300_list.append(parsed.predicate[0])
     get_expected_position(bill, line_index, parsed, "6")
     
 def parse_200307(bill, line_index, parsed):
-    bill._200307_exists = True
-    bill._200300_hasdetails = True
-    
+    bill._200300_list.append(parsed.predicate[0])
     get_expected_position(bill, line_index, parsed, "7")
     
 def parse_200308(bill, line_index, parsed):
-    bill._200308_exists = True
-    bill._200300_hasdetails = True
-    
+    bill._200300_list.append(parsed.predicate[0])
     get_expected_position(bill, line_index, parsed, "8")
     
 def parse_200400(bill,line_index, parsed):
-    if bill._200300_hasdetails:
-        details = {
-            "200301": bill._200301_exists,
-            "200302": bill._200302_exists,
-            "200303": bill._200303_exists,
-            "200304": bill._200304_exists,
-            "200305": bill._200305_exists,
-            "200306": bill._200306_exists,
-            "200307": bill._200307_exists,
-            "200308": bill._200308_exists,
-        }
-        details_list = [key for key, value in details.items() if not value]
-        if details_list:
-            append_line_error(bill, parsed, line_index, f"missing details sections {details_list}")
-            
+    expected = ["1", "2", "3", "4", "5", "6", "7", "8"]
+    details = bill._200200_list
+    find_missing_values(bill, line_index, parsed, expected, details)
             
 parse_200500 = partial(generic_predicate, field_name="200500_seccion")
 
@@ -459,35 +394,28 @@ def parse_200603(bill, line_index, parsed):
         append_line_error(bill, parsed, line_index, "more than 8 tokens")
 
 def parse_300000(bill, line_index, parsed):
-    bill._300100_exists = False
-    bill._300101_exists = False
-    bill._300102_exists = False
-    bill._300103_exists = False
-    bill._300104_exists = False
-    bill._300105_exists = False
-    
-    bill._300000_hasdetails = False
+    bill._300000_list = []
 
 def parse_300100(bill, line_index, parsed):
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
     
-    bill._300100_exists = True
-    bill._300000_hasdetails = True
+    bill._300000_list.append(parsed.predicate[0])
+    get_expected_position(bill, line_index, parsed, "0")
 
 def parse_300101(bill, line_index, parsed):
-    bill._300101_exists = True
-    bill._300000_hasdetails = True
+    bill._300000_list.append(parsed.predicate[0])
+    get_expected_position(bill, line_index, parsed, "1")
 
 def parse_300102(bill, line_index, parsed):
     bill._300102_predicate = parsed.predicate.strip()
     
-    bill._300102_exists = True
-    bill._300000_hasdetails = True
+    bill._300000_list.append(parsed.predicate[0])
+    get_expected_position(bill, line_index, parsed, "2")
     
 def parse_300103(bill, line_index, parsed):
     # tokens = parsed.predicate[1:].split()
-    bill._300103_exists = True
-    bill._300000_hasdetails = True
+    bill._300000_list.append(parsed.predicate[0])
+    get_expected_position(bill, line_index, parsed, "3")
 
 def parse_300104(bill, line_index, parsed):
     detail = bill._300102_predicate.strip()
@@ -547,58 +475,43 @@ def parse_300104(bill, line_index, parsed):
     # else:
     #     append_line_error(bill, parsed, line_index, f"not implemented consumption detail {detail}")
         
-    bill._300104_exists = True
-    bill._300000_hasdetails = True
+    bill._300000_list.append(parsed.predicate[0])
+    get_expected_position(bill, line_index, parsed, "4")
 
 def parse_300105(bill, line_index, parsed):
     tokens = parsed.predicate[25:].split()
     if len(tokens) > 2:
         append_line_error(bill, parsed, line_index, "more than 2 tokens")
     
-    bill._300105_exists = True
-    bill._300000_hasdetails = True
+    bill._300000_list.append(parsed.predicate[0])
+    get_expected_position(bill, line_index, parsed, "5")
 
 def parse_400000(bill, line_index, parsed):
-    if bill._300000_hasdetails:
-        details = {
-            "300100": bill._300100_exists,
-            "300101": bill._300101_exists,
-            "300102": bill._300102_exists,
-            "300103": bill._300103_exists,
-            "300104": bill._300104_exists,
-            "300105": bill._300105_exists,
-        }
-        details_list = [key for key, value in details.items() if not value]
-        if details_list:
-            append_line_error(bill, parsed, line_index, f"missing details sections {details_list}")
+    expected = ["1", "2", "3", "4", "5"]
+    details = bill._200200_list
+    find_missing_values(bill, line_index, parsed, expected, details)
     
-    bill._400001_exists = False
-    bill._400002_exists = False
-    bill._400003_exists = False
-    bill._400004_exists = False
-    bill._400005_exists = False
-    bill._400006_exists = False
-    bill._400000_hasdetails = False
+    bill._400000_list = []
 
 def parse_400001(bill, line_index, parsed):
     tokens = parsed.predicate.split()
     if len(tokens) > 2:
         append_line_error(bill, parsed, line_index, "more than 2 tokens")
         
-    bill._400001_exists = True
-    bill._400000_hasdetails = True
+    bill._400000_list.append(parsed.predicate[0])
+    get_expected_position(bill, line_index, parsed, "1")
 
 def parse_400002(bill, line_index, parsed):
-    bill._400002_exists = True
-    bill._400000_hasdetails = True
+    bill._400000_list.append(parsed.predicate[0])
+    get_expected_position(bill, line_index, parsed, "2")
 
 def parse_400003(bill, line_index, parsed):
     tokens = parsed.predicate.split()
     if len(tokens) != 4:
         append_line_error(bill, parsed, line_index, "not 4 tokens")
     
-    bill._400003_exists = True
-    bill._400000_hasdetails = True
+    bill._400000_list.append(parsed.predicate[0])
+    get_expected_position(bill, line_index, parsed, "3")
 
 def parse_400004(bill, line_index, parsed):
     range_list = [(24,54),(82,150)]
@@ -606,8 +519,8 @@ def parse_400004(bill, line_index, parsed):
     if len(tokens) != 3:
         append_line_error(bill, parsed, line_index, "not 3 tokens")
     
-    bill._400004_exists = True
-    bill._400000_hasdetails = True
+    bill._400000_list.append(parsed.predicate[0])
+    get_expected_position(bill, line_index, parsed, "4")
 
 def parse_400005(bill, line_index, parsed):
     range_list = [(1,20)]
@@ -615,23 +528,14 @@ def parse_400005(bill, line_index, parsed):
     if len(tokens) != 2:
         append_line_error(bill, parsed, line_index, "not 2 tokens")
         
-    bill._400005_exists = True
-    bill._400000_hasdetails = True
+    bill._400000_list.append(parsed.predicate[0])
+    get_expected_position(bill, line_index, parsed, "5")
     
 def parse_400006(bill, line_index, parsed):
-    bill._400006_exists = True
-    bill._400000_hasdetails = True
+    bill._400000_list.append(parsed.predicate[0])
+    get_expected_position(bill, line_index, parsed, "6")
     
 def parse_900000(bill, line_index, parsed):
-    if bill._400000_hasdetails:
-        details = {
-            "400001": bill._400001_exists,
-            "400002": bill._400002_exists,
-            "400003": bill._400003_exists,
-            "400004": bill._400004_exists,
-            "400005": bill._400005_exists,
-            "400006": bill._400006_exists,
-        }
-        details_list = [key for key, value in details.items() if not value]
-        if details_list:
-            append_line_error(bill, parsed, line_index, f"missing details sections {details_list}")
+    expected = ["1", "2", "3", "4", "5", "6"]
+    details = bill._400000_list
+    find_missing_values(bill, line_index, parsed, expected, details)
