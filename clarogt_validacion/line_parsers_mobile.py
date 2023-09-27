@@ -347,7 +347,7 @@ def parse_200308(bill, line_index, parsed):
     
 def parse_200400(bill,line_index, parsed):
     expected = ["1", "2", "3", "4", "5", "6", "7", "8"]
-    details = bill._200200_list
+    details = bill._200300_list
     find_missing_values(bill, line_index, parsed, expected, details)
             
 parse_200500 = partial(generic_predicate, field_name="200500_seccion")
