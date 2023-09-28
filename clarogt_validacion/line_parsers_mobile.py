@@ -392,25 +392,47 @@ def parse_200603(bill, line_index, parsed):
 
 def parse_300000(bill, line_index, parsed):
     bill._300000_list = []
-
-def parse_300100(bill, line_index, parsed):
-    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
+    bill._300100 = False
+    bill._300101 = False
+    bill._300102 = False
+    bill._300103 = False
     
+def parse_300100(bill, line_index, parsed):
     bill._300000_list.append(parsed.predicate[0])
+    
+    if bill._300100 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
+        
+    bill._300100 = True
 
 def parse_300101(bill, line_index, parsed):
+    if bill._300100 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
+    bill._300101 = True
+    
     bill._300000_list.append(parsed.predicate[0])
 
 def parse_300102(bill, line_index, parsed):
-    bill._300102_predicate = parsed.predicate.strip()
+    if bill._300101 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
+    bill._300102 = True
     
     bill._300000_list.append(parsed.predicate[0])
     
+    bill._300102_predicate = parsed.predicate
+    
+    
 def parse_300103(bill, line_index, parsed):
-    # tokens = parsed.predicate[1:].split()
+    if bill._300102 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
+    bill._300103 = True
+
     bill._300000_list.append(parsed.predicate[0])
 
 def parse_300104(bill, line_index, parsed):
+    if bill._300103 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
+
     detail = bill._300102_predicate.strip()
     if detail == "2CLARO ENTRETENIMIENTO":
         parse_by_consumption_detail(line_index, parsed, bill, [(20,66),(103,148)], 2)
@@ -471,6 +493,9 @@ def parse_300104(bill, line_index, parsed):
     bill._300000_list.append(parsed.predicate[0])
 
 def parse_300105(bill, line_index, parsed):
+    if bill._300103 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
+    
     tokens = parsed.predicate[25:].split()
     if len(tokens) > 2:
         append_line_error(bill, parsed, line_index, "more than 2 tokens")
