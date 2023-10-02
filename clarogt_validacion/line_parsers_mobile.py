@@ -234,118 +234,131 @@ def parse_200003(bill, line_index, parsed):
 parse_200004 = partial(generic_predicate, field_name="20004_total")
 
 def parse_200100(bill, line_index, parsed):
-    bill._200100_list = []
-
+    bill._200101 = False
+    
 def parse_200101(bill, line_index, parsed):
-    bill._200100_list.append(parsed.predicate[0])
+    bill._200101 = True
+    bill._200102 = False
     
 def parse_200102(bill, line_index, parsed):
-    bill._200100_list.append(parsed.predicate[0])
+    if bill._200101 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
+    bill._200102 = True
+    bill._200103 = False
 
 def parse_200103(bill, line_index, parsed):
+    if bill._200102 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
+    bill._200103 = True
+    bill._200104 = False
+
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 2)
 
-    bill._200100_list.append(parsed.predicate[0])
-
 def parse_200104(bill, line_index, parsed):
+    if bill._200103 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
+
     tokens = parsed.predicate[80:].split()
     if len(tokens) > 2:
         append_line_error(bill, parsed, line_index, "number of tokens exceded")
 
-    bill._200100_list.append(parsed.predicate[0])
-
 def parse_200105(bill, line_index, parsed):
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 2)
 
-    bill._200100_list.append(parsed.predicate[0])
-
 def parse_200200(bill, line_index, parsed):
-    expected = ["1", "2", "3", "4", "5"]
-    details = bill._200100_list
-    find_missing_values(bill, line_index, parsed, expected, details)
-    
-    bill._200200_list = []
+    bill._200201 = False
 
 def parse_200201(bill, line_index, parsed):
-    bill._200200_list.append(parsed.predicate[0])
+    bill._200201 = True
+    bill._200202 = False
 
 def parse_200202(bill, line_index, parsed):
-    bill._200200_list.append(parsed.predicate[0])
+    if bill._200201 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
+    bill._200202 = True
+    bill._200203 = False
 
 def parse_200203(bill, line_index, parsed):
-    bill._200200_list.append(parsed.predicate[0])
+    if bill._200202 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
+    bill._200203 = True
+    bill._200204 = False
 
 def parse_200204(bill, line_index, parsed):
-    bill._200200_list.append(parsed.predicate[0])
+    if bill._200203 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
+    bill._200204 = True
+    bill._200205 = False
 
 def parse_200205(bill, line_index, parsed):
+    if bill._200204 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
+    bill._200205 = True
+    bill._200206 = False
+
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 2)
     
-    bill._200200_list.append(parsed.predicate[0])
-
 def parse_200206(bill, line_index, parsed):
+    if bill._200205 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
+    bill._200206 = True
+    bill._200207 = False
+
     tokens = parsed.predicate[86:].split()
     tokens_length = len(tokens)
     if tokens_length > 0:
         if tokens_length > 2:
             append_line_error(bill, parsed, line_index, "exceeded tokens")
             
-    bill._200200_list.append(parsed.predicate[0])
-
 def parse_200207(bill, line_index, parsed):
-    bill._200200_list.append(parsed.predicate[0])
+    if bill._200206 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
+    # bill._200207 = True
+    # bill._200208 = False
 
 def parse_200300(bill, line_index,parsed):
-    bill._200305 = False
-    bill._200306 = False
-    bill._200307 = False
-    expected = ["1", "2", "3", "4", "5", "6", "7"]
-    details = bill._200200_list
-    find_missing_values(bill, line_index, parsed, expected, details)
+    bill._200301 = False
     
-    bill._200300_list = []
     
 def parse_200301(bill, line_index, parsed):
-    bill._200300_list.append(parsed.predicate[0])
+    bill._200301 = True
+    bill._200305 = False
+    bill._200306 = False
 
 def parse_200302(bill, line_index, parsed):
-    bill._200300_list.append(parsed.predicate[0])
+    if bill._200301 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
 
 def parse_200303(bill, line_index, parsed):
-    bill._200300_list.append(parsed.predicate[0])
+    if bill._200301 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
+    
 
 def parse_200304(bill, line_index, parsed):
-    bill._200300_list.append(parsed.predicate[0])
+    if bill._200301 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
 
 def parse_200305(bill, line_index, parsed):
-    bill._200300_list.append(parsed.predicate[0])
+    if bill._200301 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
     bill._200305 = True
     
 def parse_200306(bill, line_index, parsed):
-    bill._200300_list.append(parsed.predicate[0])
-    
     if bill._200305 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
-        
     bill._200306 = True
+    bill._200307 = False
     
 def parse_200307(bill, line_index, parsed):
-    bill._200300_list.append(parsed.predicate[0])
-    
     if bill._200306 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
-        
-    bill._200307 = True
     
 def parse_200308(bill, line_index, parsed):
-    bill._200300_list.append(parsed.predicate[0])
-    if bill._200305 == False:
+    if bill._200301 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
     
 def parse_200400(bill,line_index, parsed):
-    expected = ["1", "2", "3", "4", "5", "6", "7", "8"]
-    details = bill._200300_list
-    find_missing_values(bill, line_index, parsed, expected, details)
+    pass
             
 parse_200500 = partial(generic_predicate, field_name="200500_seccion")
 
@@ -391,43 +404,32 @@ def parse_200603(bill, line_index, parsed):
         append_line_error(bill, parsed, line_index, "more than 8 tokens")
 
 def parse_300000(bill, line_index, parsed):
-    bill._300000_list = []
     bill._300100 = False
     bill._300101 = False
-    bill._300102 = False
-    bill._300103 = False
     
 def parse_300100(bill, line_index, parsed):
-    bill._300000_list.append(parsed.predicate[0])
-    
-    if bill._300100 == False:
-        append_line_error(bill, parsed, line_index, "error in hierarchy")
-        
     bill._300100 = True
 
 def parse_300101(bill, line_index, parsed):
     if bill._300100 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
     bill._300101 = True
-    
-    bill._300000_list.append(parsed.predicate[0])
+    bill._300102 = False
 
 def parse_300102(bill, line_index, parsed):
     if bill._300101 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
     bill._300102 = True
-    
-    bill._300000_list.append(parsed.predicate[0])
+    bill._300103 = False
     
     bill._300102_predicate = parsed.predicate
-    
-    
+
 def parse_300103(bill, line_index, parsed):
     if bill._300102 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
     bill._300103 = True
+    bill._300104 = False
 
-    bill._300000_list.append(parsed.predicate[0])
 
 def parse_300104(bill, line_index, parsed):
     if bill._300103 == False:
@@ -490,62 +492,66 @@ def parse_300104(bill, line_index, parsed):
     # else:
     #     append_line_error(bill, parsed, line_index, f"not implemented consumption detail {detail}")
         
-    bill._300000_list.append(parsed.predicate[0])
 
 def parse_300105(bill, line_index, parsed):
-    if bill._300103 == False:
+    if bill._300102 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
     
     tokens = parsed.predicate[25:].split()
     if len(tokens) > 2:
         append_line_error(bill, parsed, line_index, "more than 2 tokens")
     
-    bill._300000_list.append(parsed.predicate[0])
 
 def parse_400000(bill, line_index, parsed):
-    expected = ["1", "2", "3", "4", "5"]
-    details = bill._200200_list
-    find_missing_values(bill, line_index, parsed, expected, details)
-    
-    bill._400000_list = []
+    bill._400001 = False
 
 def parse_400001(bill, line_index, parsed):
+    bill._400001 = True
+
     tokens = parsed.predicate.split()
     if len(tokens) > 2:
-        append_line_error(bill, parsed, line_index, "more than 2 tokens")
-        
-    bill._400000_list.append(parsed.predicate[0])
+        append_line_error(bill, parsed, line_index, "more than 2 tokens")       
 
 def parse_400002(bill, line_index, parsed):
-    bill._400000_list.append(parsed.predicate[0])
+    if bill._400001 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
+    bill._400002 = True
+    bill._400003 = False
 
 def parse_400003(bill, line_index, parsed):
+    if bill._400002 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
+    bill._400003 = True
+    bill._400004 = False
+
     tokens = parsed.predicate.split()
     if len(tokens) != 4:
-        append_line_error(bill, parsed, line_index, "not 4 tokens")
-    
-    bill._400000_list.append(parsed.predicate[0])
+        append_line_error(bill, parsed, line_index, "not 4 tokens") 
 
 def parse_400004(bill, line_index, parsed):
+    if bill._400003 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
+    bill._400004 = True
+    bill._400005 = False
+
     range_list = [(24,54),(82,150)]
     tokens = remove_string_segments(parsed.predicate, range_list)
     if len(tokens) != 3:
-        append_line_error(bill, parsed, line_index, "not 3 tokens")
-    
-    bill._400000_list.append(parsed.predicate[0])
+        append_line_error(bill, parsed, line_index, "not 3 tokens") 
 
 def parse_400005(bill, line_index, parsed):
+    if bill._400004 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
+    bill._400005 = True
+    bill._400006 = False
+
     range_list = [(1,20)]
     tokens = remove_string_segments(parsed.predicate, range_list)
     if len(tokens) != 2:
-        append_line_error(bill, parsed, line_index, "not 2 tokens")
-        
-    bill._400000_list.append(parsed.predicate[0])
+        append_line_error(bill, parsed, line_index, "not 2 tokens")     
     
 def parse_400006(bill, line_index, parsed):
-    bill._400000_list.append(parsed.predicate[0])
+    bill._400006 = True
     
 def parse_900000(bill, line_index, parsed):
-    expected = ["1", "2", "3", "4", "5", "6"]
-    details = bill._400000_list
-    find_missing_values(bill, line_index, parsed, expected, details)
+    pass
