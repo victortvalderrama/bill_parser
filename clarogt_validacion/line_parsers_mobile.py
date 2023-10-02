@@ -446,7 +446,7 @@ def parse_300104(bill, line_index, parsed):
         parse_by_consumption_detail(line_index, parsed, bill, [(40,65),(123,148)], 5)
         
     elif detail == "2DETALLE DE LLAMADAS EN ROAMING SIN FRONTERAS":
-        parse_by_consumption_detail(line_index, parsed, bill, [(20,138)], 2)
+        parse_by_consumption_detail(line_index, parsed, bill, [(20,137)], 2)
     
     elif detail == "2DETALLE DE MENSAJES DE TEXTO EN ROAMING SIN FRONTERAS":
         parse_by_consumption_detail(line_index, parsed, bill, [(40,65),(123,149)], 5)
@@ -489,8 +489,8 @@ def parse_300104(bill, line_index, parsed):
             divide = 5
         parse_by_consumption_detail(line_index, parsed, bill, [(40,138)], divide)
         
-    # else:
-    #     append_line_error(bill, parsed, line_index, f"not implemented consumption detail {detail}")
+    else:
+        append_line_error(bill, parsed, line_index, f"not implemented consumption detail {detail}")
         
 
 def parse_300105(bill, line_index, parsed):
