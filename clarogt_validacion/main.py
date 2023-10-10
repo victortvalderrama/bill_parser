@@ -4,6 +4,7 @@ import os
 from ioutils import file_stream_reader, get_path_data
 from parser import parse
 from models import code_to_textual
+from datetime import datetime
 import pprint
 
 
@@ -92,6 +93,9 @@ def main():
     filename = args.file
     output_route = args.output
     parse_type = args.billtype
+
+    start_time = datetime.now()
+    print("initializing validation...")
     
     fp = file_stream_reader(filename)
     if parse_type == "fixed": 
@@ -105,6 +109,9 @@ def main():
     # bad_lines = get_bad_lines(bills)
     # purge_bad_lines(filename, bad_lines, output_route)
 
+    end_time = datetime.now()
+
+    print(f"validating time: {end_time - start_time}")
 
 if __name__ == '__main__':
     main()

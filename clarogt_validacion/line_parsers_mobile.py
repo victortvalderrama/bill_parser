@@ -24,14 +24,15 @@ def extract_sections(input_string, ranges):
 def parse_by_consumption_detail(line_index, parsed, bill, range_list, divide):
     pipe_removed = parsed.predicate.replace("|", " ")
     detail = bill._300102_predicate.strip()
-    extracted = extract_sections(pipe_removed, range_list)
     tokens = remove_string_segments(pipe_removed, range_list)
+    extracted = extract_sections(pipe_removed, range_list)
     for extract in extracted:
         if extract.strip() != "":
             tokens.append(extract)
 
     if len(tokens) % divide != 0:
         append_line_error(bill, parsed, line_index, f"invalid number of tokens for {detail} can't divide by {divide} \n\
+                               got: {len(tokens)} \n\
                             tokens: {tokens}")
         
 # SECTION 10000
@@ -129,6 +130,7 @@ def parse_100209(bill, line_index, parsed):
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100300(bill, line_index, parsed):
+    bill._100314 = False
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100301(bill, line_index, parsed):
@@ -168,6 +170,14 @@ def parse_100312(bill, line_index, parsed):
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 parse_100313 = partial(generic_predicate, field_name="total_letras")
+
+def parse_100314(bill, line_index, parsed):
+    bill._100314 = True
+    line = parsed.predicate[28:].lower().strip()
+    if line == "s":
+        bill.is_exempt = True
+    else:
+        bill.is_exempt = False
 
 def parse_100400(bill, line_index, parsed):
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
@@ -213,12 +223,28 @@ def parse_100600(bill, line_index, parsed):
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 1) 
 
 def parse_100602(bill, line_index, parsed):
-    tokens = maximum_mobile_tokens(line_index, parsed, bill, 6)
-    # if len(tokens) != 6:
-    #     append_line_error(bill, parsed, line_index, "not 6 tokens")
+    maximum_tokens = 3
+    if bill._100314:
+        if bill.is_exempt:
+            maximum_tokens = 4
+    tokens = parsed.predicate[71:].strip().split("Q")
+    tokens = list(filter(None, tokens))
+    if len(tokens) != maximum_tokens:
+        append_line_error(bill, parsed, line_index, f"invalid number of tokens\n\
+                expecting: {maximum_tokens}\n\
+                      got: {len(tokens)}")
 
 def parse_100603(bill, line_index, parsed):
-    tokens = maximum_mobile_tokens(line_index, parsed, bill, 6)
+    maximum_tokens = 3
+    if bill._100314:
+        if bill.is_exempt:
+            maximum_tokens = 4
+    tokens = parsed.predicate[71:].strip().split("Q")
+    tokens = list(filter(None, tokens))
+    if len(tokens) != maximum_tokens:
+        append_line_error(bill, parsed, line_index, f"invalid number of tokens\n\
+                expecting: {maximum_tokens}\n\
+                      got: {len(tokens)}")
 
 def parse_100604(bill, line_index, parsed):
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 2)
@@ -444,16 +470,34 @@ def parse_300104(bill, line_index, parsed):
         parse_by_consumption_detail(line_index, parsed, bill, [(40,65),(127,153)], 6)
     
     elif detail == "2DETALLE DE MENSAJES DE TEXTO LOCAL":
+
         pipe_splitted = parsed.predicate.strip().split("|")
-        divide = 6
+        tokens_length = 0
+
         for column in pipe_splitted:
             if column != "":
+                tokens_length += 6
                 tokens = column.split()
-                match = re.search(r'\d+-\d+', tokens[2])
+                match = re.search(r'\d+', tokens[2])
                 if not match:
-                    print(column)
-        # parse_by_consumption_detail(line_index, parsed, bill, [(20.41),(42,65),(103,124),(125,148)], 6)
-        
+                    tokens_length -= 1
+
+        range_list = [(20,41),(42,65),(104,124),(125,148)]            
+
+        pipe_removed = parsed.predicate.replace("|", " ")
+        detail = bill._300102_predicate.strip()
+        tokens = remove_string_segments(pipe_removed, range_list)
+        extracted = extract_sections(pipe_removed, range_list)
+        for extract in extracted:
+            if extract.strip() != "":
+                tokens.append(extract)
+
+        if len(tokens) != tokens_length:
+            append_line_error(bill, parsed, line_index, f"invalid number of tokens for {detail}\n\
+                                expected: {tokens_length}\n\
+                                got: {len(tokens)} \n\
+                                tokens: {tokens}")
+
     elif detail == "2DETALLE DE LLAMADAS EN ROAMING SIN FRONTERAS":
         incoming = parsed.predicate[40:136].strip().split()
         if incoming[0] == "Llamada":
