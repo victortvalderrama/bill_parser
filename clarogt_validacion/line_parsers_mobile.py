@@ -392,7 +392,7 @@ parse_200500 = partial(generic_predicate, field_name="200500_seccion")
 def parse_200503(bill, line_index, parsed):
     # range_list = [(20, 85)]
     no_middle_dash = parsed.predicate.replace("-", " ")
-    line = no_middle_dash[1:]
+    line = no_middle_dash
     
     first_tokens = line[:89].split()
     values = line[89:].split('Q')
@@ -422,27 +422,6 @@ def parse_200503(bill, line_index, parsed):
         append_line_error(bill, parsed, line_index, 
                             f"missing tokens, expecting {expected_tokens}, given {len(list_elements)}\n \
                            tokens: {list_elements}")
-    
-    # first_tokens = line[:description_index].split()
-    # if len(first_tokens) == 1:
-    #     expected_tokens -= 1
-    
-    # if values[0].strip() == "":
-    #     expected_tokens -= 1
-    # exit()
-    
-    
-    # tokens = remove_string_segments(line, description_range_list)
-    # if description.strip() != "":
-    #     tokens.append(description.strip())
-    # # else:
-    # #     append_line_error(bill, parsed, line_index, "missing description token")
-        
-    # if len(tokens) != expected_tokens:
-    #     append_line_error(bill, parsed, line_index, 
-    #                         f"missing tokens, expecting {expected_tokens}, given {len(tokens)}\n \
-    #                        tokens: {tokens}")
-        
 
 parse_200600 = partial(generic_predicate, field_name="200600_seccion")
 
