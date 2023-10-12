@@ -16,7 +16,7 @@ def get_bad_lines(bills):
         bad_range = list(bad_range)
         bad_lines.extend(bad_range)
     # print(bad_lines)
-    return bad_lines
+    return set(bad_lines)
 
 
 def purge_bad_lines(filename, bad_lines, output_route):
@@ -72,6 +72,7 @@ def print_bill_ranges(bills):
 
 
 def main():
+    # from pyinstrument import Profiler
     parser = argparse.ArgumentParser(
         usage="introduce la ruta del archivo con facturas:\n Bills.txt"
     )
@@ -95,22 +96,32 @@ def main():
     parse_type = args.billtype
 
     start_time = datetime.now()
-    print("initializing validation...")
+    print("parsing bill...")
+    
+    # profiler = Profiler()
+    # profiler.start()
     
     fp = file_stream_reader(filename)
     if parse_type == "fixed": 
         bills = parse(fp, [7,8,30], parse_type=parse_type)
     elif parse_type == "mobile":
         bills = parse(fp, parse_type=parse_type)
-
+    
     print_errors(bills)
     # print_bill_ranges(bills)
-
+    
     # bad_lines = get_bad_lines(bills)
+    # print("purging bad lines...")
     # purge_bad_lines(filename, bad_lines, output_route)
 
     end_time = datetime.now()
-
+    
+    # profiler.stop()
+    # output = profiler.output_html()
+    # print("wrapping up profiler...")
+    # fp = open("profile_run.html", "w")
+    # fp.write(output)
+    # fp.close();
     print(f"validating time: {end_time - start_time}")
 
 if __name__ == '__main__':

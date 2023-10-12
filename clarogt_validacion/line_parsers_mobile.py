@@ -391,36 +391,57 @@ parse_200500 = partial(generic_predicate, field_name="200500_seccion")
 
 def parse_200503(bill, line_index, parsed):
     # range_list = [(20, 85)]
-    nohyphen = parsed.predicate.replace("-", " ")
-    line = nohyphen[1:]
+    no_middle_dash = parsed.predicate.replace("-", " ")
+    line = no_middle_dash[1:]
+    
+    first_tokens = line[:89].split()
     values = line[89:].split('Q')
-    
-    expected_tokens = 10
-    if values[0].strip() == "":
-        expected_tokens -= 1
         
-    for char in line:
-        if char.isalpha():
-            description_index = line.index(char)
-            break
-        
-    description_range_list = [(description_index, 85)]
-    description = line[description_index:85]
+    list_elements = []
+    expected_tokens = 7
+    rango = 2
     
-    first_tokens = line[:description_index].split()
-    if len(first_tokens) == 1:
+    pattern = r'\d{8}'
+    if not re.search(pattern, first_tokens[1]):
+        rango -= 1
         expected_tokens -= 1
     
-    tokens = remove_string_segments(line, description_range_list)
-    if description.strip() != "":
-        tokens.append(description.strip())
+    for i in range(rango):
+        list_elements.append(first_tokens.pop(0))
+    
+    product = " ".join(first_tokens)
+    if product != "":
+        list_elements.append(product)
     # else:
-    #     append_line_error(bill, parsed, line_index, "missing description token")
+    #     append_line_error(bill, parsed, line_index, "missing product token")
+    
+    for token in values:
+        list_elements.append(token.strip())
         
-    if len(tokens) != expected_tokens:
+    if len(list_elements) != expected_tokens:
         append_line_error(bill, parsed, line_index, 
-                            f"missing tokens, expecting {expected_tokens}, given {len(tokens)}\n \
-                           tokens: {tokens}")
+                            f"missing tokens, expecting {expected_tokens}, given {len(list_elements)}\n \
+                           tokens: {list_elements}")
+    
+    # first_tokens = line[:description_index].split()
+    # if len(first_tokens) == 1:
+    #     expected_tokens -= 1
+    
+    # if values[0].strip() == "":
+    #     expected_tokens -= 1
+    # exit()
+    
+    
+    # tokens = remove_string_segments(line, description_range_list)
+    # if description.strip() != "":
+    #     tokens.append(description.strip())
+    # # else:
+    # #     append_line_error(bill, parsed, line_index, "missing description token")
+        
+    # if len(tokens) != expected_tokens:
+    #     append_line_error(bill, parsed, line_index, 
+    #                         f"missing tokens, expecting {expected_tokens}, given {len(tokens)}\n \
+    #                        tokens: {tokens}")
         
 
 parse_200600 = partial(generic_predicate, field_name="200600_seccion")
@@ -436,7 +457,6 @@ def parse_300000(bill, line_index, parsed):
     
 def parse_300100(bill, line_index, parsed):
     bill._300100 = True
-
 def parse_300101(bill, line_index, parsed):
     if bill._300100 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
@@ -510,7 +530,7 @@ def parse_300104(bill, line_index, parsed):
         parse_by_consumption_detail(line_index, parsed, bill, [(40,65),(123,149)], 6)
     
     elif detail == "2DETALLE DE LLAMADAS DE LARGA DISTANCIA INTERNACIONAL SIN FRONTERAS":
-        parse_by_consumption_detail(line_index, parsed, bill, [(40,64),(123,146)], 6)
+        parse_by_consumption_detail(line_index, parsed, bill, [(40,63),(123,146)], 6)
     
     elif detail == "2DETALLE DE LLAMADAS DE LARGA DISTANCIA INTERNACIONAL":
         parse_by_consumption_detail(line_index, parsed, bill, [(40,64),(123,147)], 6)
@@ -540,7 +560,7 @@ def parse_300104(bill, line_index, parsed):
         parse_by_consumption_detail(line_index, parsed, bill, [(38,63),(121,146)], 6)
 
     elif detail == "2DETALLE DE VIDEO LLAMADAS":
-        parse_by_consumption_detail(line_index, parsed, bill, [(38,66),(125,151)], 6)
+        parse_by_consumption_detail(line_index, parsed, bill, [(38,66),(125,154)], 6)
 
     elif detail == "2DETALLE LLAMADAS POR COBRAR":
         line = parsed.predicate.replace("|", " ")

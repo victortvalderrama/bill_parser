@@ -150,7 +150,7 @@ def parse_mobile(iterable, excluded_sections=None, parse_type=None):
         bills.append(bill)
     return bills
 
-def parse(iterable, excluded_sections=None, parse_type=None):
+def parse(iterable, excluded_sections=None, parse_type=None): 
     if parse_type == "fixed":
         bills = parse_fixed(iterable, excluded_sections, parse_type)
         return bills
