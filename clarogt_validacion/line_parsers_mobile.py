@@ -399,21 +399,18 @@ def parse_200503(bill, line_index, parsed):
         
     list_elements = []
     expected_tokens = 7
-    rango = 2
+    # rango = 2
+    # pattern = r'\d{8}'
+    # if not re.search(pattern, first_tokens[1]):
+    #     rango -= 1
+    #     expected_tokens -= 1
     
-    pattern = r'\d{8}'
-    if not re.search(pattern, first_tokens[1]):
-        rango -= 1
-        expected_tokens -= 1
-    
-    for i in range(rango):
+    for i in range(2):
         list_elements.append(first_tokens.pop(0))
     
     product = " ".join(first_tokens)
     if product != "":
         list_elements.append(product)
-    # else:
-    #     append_line_error(bill, parsed, line_index, "missing product token")
     
     for token in values:
         list_elements.append(token.strip())
