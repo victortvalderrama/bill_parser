@@ -602,11 +602,21 @@ def parse_400004(bill, line_index, parsed):
         append_line_error(bill, parsed, line_index, "error in hierarchy")
     bill._400004 = True
     bill._400005 = False
-
-    range_list = [(24,54),(82,150)]
-    tokens = remove_string_segments(parsed.predicate, range_list)
-    if len(tokens) != 3:
-        append_line_error(bill, parsed, line_index, "not 3 tokens") 
+    
+    range_list = [(25,55)]
+    line = parsed.predicate
+    line_without_last_token = line[:83]
+    # print(line_without_last_token)
+    tokens = remove_string_segments(line_without_last_token, range_list)
+    
+    tokens.append(line[25:55])
+    tokens.append(line[83:])
+    
+    if len(tokens) != 5:
+        append_line_error(bill, parsed, line_index, f"invalid number of tokens\n\
+                expecting: {5}\n\
+                      got: {len(tokens)}\n\
+                   tokens: {tokens}")
 
 def parse_400005(bill, line_index, parsed):
     if bill._400004 == False:
