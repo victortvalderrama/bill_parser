@@ -561,9 +561,8 @@ def parse_300104(bill, line_index, parsed):
         parse_by_consumption_detail(line_index, parsed, bill, [(20,50),(103,133)], 5)
         
     else:
-        print("not implemented detail")
-        print(detail)
-        append_line_error(bill, parsed, line_index, f"not implemented consumption detail {detail}")
+        print(f"not implemented detail: {detail}")
+        # append_line_error(bill, parsed, line_index, f"not implemented consumption detail {detail}")
         
 
 def parse_300105(bill, line_index, parsed):
