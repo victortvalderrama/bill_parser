@@ -27,9 +27,12 @@ def parse_by_consumption_detail(line_index, parsed, bill, range_list, divide):
     tokens = remove_string_segments(pipe_removed, range_list)
     extracted = extract_sections(pipe_removed, range_list)
     for extract in extracted:
-        if extract.strip() != "":
-            tokens.append(extract)
-
+        # if extract.strip() != "":
+        tokens.append(extract)
+        
+    if tokens[-1] == "":
+        tokens.pop()
+        
     if len(tokens) % divide != 0:
         append_line_error(bill, parsed, line_index, f"invalid number of tokens for {detail} can't divide by {divide} \n\
                                got: {len(tokens)} \n\
@@ -464,6 +467,7 @@ def parse_300104(bill, line_index, parsed):
         
     elif detail == "2DETALLE DE LLAMADAS SALIENTES LOCAL":
         parse_by_consumption_detail(line_index, parsed, bill, [(40,65),(127,153)], 6)
+        
     
     elif detail == "2DETALLE DE MENSAJES DE TEXTO LOCAL":
 
@@ -495,12 +499,20 @@ def parse_300104(bill, line_index, parsed):
                                 tokens: {tokens}")
 
     elif detail == "2DETALLE DE LLAMADAS EN ROAMING SIN FRONTERAS":
-        incoming = parsed.predicate[40:136].strip().split()
-        if incoming[0] == "Llamada":
-            divide = 5
-        else:
-            divide = 6
-        parse_by_consumption_detail(line_index, parsed, bill, [(20,39),(40,136)], divide)
+        # incoming = parsed.predicate[40:136].strip().split()
+        # if incoming[0] == "Llamada":
+        #     divide = 5
+        # else:
+        #     divide = 6
+        parse_by_consumption_detail(line_index, parsed, bill, [(20,39),(40,136)], 6)
+        
+    elif detail == "2DETALLE DE LLAMADAS EN ROAMING":
+        # incoming = parsed.predicate[40:138].strip().split()
+        # if incoming[0] == "Llamada":
+        #     divide = 5
+        # else:
+        #     divide = 6
+        parse_by_consumption_detail(line_index, parsed, bill, [(20,39),(40,138)], 6)
     
     elif detail == "2DETALLE DE MENSAJES DE TEXTO EN ROAMING SIN FRONTERAS":
         parse_by_consumption_detail(line_index, parsed, bill, [(40,65),(123,149)], 6)
@@ -550,16 +562,10 @@ def parse_300104(bill, line_index, parsed):
     elif detail.startswith("2DETALLE DE NAVEGACI"):
         parse_by_consumption_detail(line_index, parsed, bill, [(20,50),(103,133)], 5)
         
-    elif detail == "2DETALLE DE LLAMADAS EN ROAMING":
-        incoming = parsed.predicate[40:138].strip().split()
-        if incoming[0] == "Llamada":
-            divide = 5
-        else:
-            divide = 6
-        parse_by_consumption_detail(line_index, parsed, bill, [(40,138)], divide)
-        
-    # else:
-    #     append_line_error(bill, parsed, line_index, f"not implemented consumption detail {detail}")
+    else:
+        print("not implemented detail")
+        print(detail)
+        # append_line_error(bill, parsed, line_index, f"not implemented consumption detail {detail}")
         
 
 def parse_300105(bill, line_index, parsed):
@@ -594,8 +600,16 @@ def parse_400003(bill, line_index, parsed):
     bill._400004 = False
 
     tokens = parsed.predicate.split()
-    if len(tokens) != 4:
-        append_line_error(bill, parsed, line_index, "not 4 tokens") 
+    last_tokens = tokens.pop()
+    last_tokens = last_tokens.replace("Q"," ").split()
+    for token in last_tokens:
+        tokens.append(token)
+        
+    if len(tokens) != 5:
+        append_line_error(bill, parsed, line_index, f"invalid number of tokens\n\
+                expecting: {5}\n\
+                      got: {len(tokens)}\n\
+                   tokens: {tokens}") 
 
 def parse_400004(bill, line_index, parsed):
     if bill._400003 == False:
@@ -606,7 +620,6 @@ def parse_400004(bill, line_index, parsed):
     range_list = [(25,55)]
     line = parsed.predicate
     line_without_last_token = line[:83]
-    # print(line_without_last_token)
     tokens = remove_string_segments(line_without_last_token, range_list)
     
     tokens.append(line[25:55])
