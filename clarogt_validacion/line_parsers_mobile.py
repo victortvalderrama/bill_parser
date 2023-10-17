@@ -203,7 +203,13 @@ def parse_100406(bill, line_index, parsed):
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
 
 def parse_100407(bill, line_index, parsed):
-    tokens = maximum_mobile_tokens(line_index, parsed, bill, 1)
+    line = parsed.predicate[28:].strip()
+    bill.print_period = False
+    if line == "S":
+        bill.print_period = True
+        # print(line_index)
+    # else:
+    #     bill.print_period = False
 
 parse_100408 = partial(generic_predicate, field_name="resolucion")
 
@@ -349,11 +355,13 @@ def parse_200207(bill, line_index, parsed):
 def parse_200300(bill, line_index,parsed):
     bill._200301 = False
     
-    
 def parse_200301(bill, line_index, parsed):
     bill._200301 = True
     bill._200305 = False
     bill._200306 = False
+    
+    if bill.print_period:
+        append_line_error(bill, parsed, line_index, "invalid bill at Detail Group Services, print period was on S")
 
 def parse_200302(bill, line_index, parsed):
     if bill._200301 == False:
