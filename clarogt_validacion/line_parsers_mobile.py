@@ -402,11 +402,6 @@ def parse_200503(bill, line_index, parsed):
         
     list_elements = []
     expected_tokens = 7
-    # rango = 2
-    # pattern = r'\d{8}'
-    # if not re.search(pattern, first_tokens[1]):
-    #     rango -= 1
-    #     expected_tokens -= 1
     
     for i in range(2):
         list_elements.append(first_tokens.pop(0))
@@ -512,7 +507,7 @@ def parse_300104(bill, line_index, parsed):
         #     divide = 5
         # else:
         #     divide = 6
-        parse_by_consumption_detail(line_index, parsed, bill, [(20,39),(40,138)], 6)
+        parse_by_consumption_detail(line_index, parsed, bill, [(20,39),(40,136)], 6)
     
     elif detail == "2DETALLE DE MENSAJES DE TEXTO EN ROAMING SIN FRONTERAS":
         parse_by_consumption_detail(line_index, parsed, bill, [(40,65),(123,149)], 6)
@@ -525,9 +520,6 @@ def parse_300104(bill, line_index, parsed):
     
     elif detail == "2DETALLE DE MENSAJES DE TEXTO EN ROAMING":
         parse_by_consumption_detail(line_index, parsed, bill, [(40,65),(123,148)], 6)
-        
-    elif detail == "2PRODUCTIVIDAD":
-        parse_by_consumption_detail(line_index, parsed, bill, [(20,65),(103,148)], 5)
     
     elif detail == "2DETALLE DE LLAMADAS POR COBRAR":
         parse_by_consumption_detail(line_index, parsed, bill, [(40,65),(127,153)], 6)
@@ -535,14 +527,11 @@ def parse_300104(bill, line_index, parsed):
     elif detail == "2DETALLE DE RECARGAS PROGRAMADAS POR EVENTO":
         parse_by_consumption_detail(line_index, parsed, bill, [(39,65),(122,148)], 6)
     
-    elif detail == "2SERVICIOS VARIOS":
-        parse_by_consumption_detail(line_index, parsed, bill, [(20,65),(103,148)], 5)
-    
     elif detail == "2DETALLE DE LLAMADAS ILIMITADAS":
         parse_by_consumption_detail(line_index, parsed, bill, [(40,65),(127,153)], 6)
 
     elif detail == "2DETALLE DE LLAMADAS ENTRANTES":
-        parse_by_consumption_detail(line_index, parsed, bill, [(38,63),(127,146)], 5)
+        parse_by_consumption_detail(line_index, parsed, bill, [(38,63),(127,146)], 6)
 
     elif detail == "2DETALLE DE MENSAJES DE TEXTO EN ROAMING ENTRANTE":
         parse_by_consumption_detail(line_index, parsed, bill, [(38,63),(121,146)], 6)
@@ -555,6 +544,15 @@ def parse_300104(bill, line_index, parsed):
         tokens = line.split()
         if len(tokens) % 5 != 0:
             append_line_error(bill, parsed, line_index, "invalid number of tokens, can't divide by 5")
+            
+    elif detail == "2PRODUCTIVIDAD":
+        parse_by_consumption_detail(line_index, parsed, bill, [(20,65),(103,148)], 5)
+    
+    elif detail == "2SERVICIOS VARIOS":
+        parse_by_consumption_detail(line_index, parsed, bill, [(20,65),(103,148)], 5)
+        
+    elif detail == "2ENTRETENIMIENTO":
+        parse_by_consumption_detail(line_index, parsed, bill, [(20,65),(103,148)], 5)
         
     elif detail.startswith("2DETALLE DE SUSCRIPCI"):
         parse_by_consumption_detail(line_index, parsed, bill, [(20,65),(103,148)], 5)
@@ -565,7 +563,7 @@ def parse_300104(bill, line_index, parsed):
     else:
         print("not implemented detail")
         print(detail)
-        # append_line_error(bill, parsed, line_index, f"not implemented consumption detail {detail}")
+        append_line_error(bill, parsed, line_index, f"not implemented consumption detail {detail}")
         
 
 def parse_300105(bill, line_index, parsed):
