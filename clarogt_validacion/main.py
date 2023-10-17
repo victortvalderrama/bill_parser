@@ -6,6 +6,7 @@ from parser import parse
 from models import code_to_textual
 from datetime import datetime
 import pprint
+import subprocess
 
 
 def get_bad_lines(bills):
@@ -73,57 +74,73 @@ def print_bill_ranges(bills):
 
 def main():
     # from pyinstrument import Profiler
-    parser = argparse.ArgumentParser(
-        usage="introduce la ruta del archivo con facturas:\n Bills.txt"
-    )
+    # parser = argparse.ArgumentParser(
+    #     usage="introduce la ruta del archivo con facturas:\n Bills.txt"
+    # )
     
 
-    parser.add_argument("--file", help="Ruta/de/archivo.txt ")
-    parser.add_argument("--output", help="Ruta/para/archivos/procesados")
-    parser.add_argument("--billtype", help="Tipo de parseo a ejecutar: fixed/mobile",  choices=["fixed", "mobile"])
+    # parser.add_argument("--file", help="Ruta/de/archivo.txt ")
+    # parser.add_argument("--output", help="Ruta/para/archivos/procesados")
+    # parser.add_argument("--billtype", help="Tipo de parseo a ejecutar: fixed/mobile",  choices=["fixed", "mobile"])
 
-    args = parser.parse_args()
+    # args = parser.parse_args()
 
-    if not args.file  or not args.billtype:
-        parser.print_help()
-        exit()
+    # if not args.file  or not args.billtype:
+    #     parser.print_help()
+    #     exit()
 
-    if args.output is None:
-        args.output = "./output/"
+    # if args.output is None:
+    #     args.output = "./output/"
 
-    filename = args.file
-    output_route = args.output
-    parse_type = args.billtype
-
-    start_time = datetime.now()
-    print("parsing bill...")
+    # filename = args.file
+    # output_route = args.output
+    # parse_type = args.billtype
     
-    # profiler = Profiler()
-    # profiler.start()
+    global_start_time = datetime.now()
     
-    fp = file_stream_reader(filename)
-    if parse_type == "fixed": 
-        bills = parse(fp, [7,8,30], parse_type=parse_type)
-    elif parse_type == "mobile":
-        bills = parse(fp, parse_type=parse_type)
-    
-    print_errors(bills)
-    # print_bill_ranges(bills)
-    
-    # bad_lines = get_bad_lines(bills)
-    # print("purging bad lines...")
-    # purge_bad_lines(filename, bad_lines, output_route)
+    path = "../casos/movil/ClaroGT_FE_TMovil_AGOSTO/"
+    dir_list = os.listdir(path)
+    for file in dir_list:
+        print(f"iniciando validacion para archivo: {file}")
+        file_path = path + file
+        filename = file_path
+        output_route = "../casos/errortests/"
+        parse_type = "mobile"
 
-    end_time = datetime.now()
+        start_time = datetime.now()
+        print("parsing bill...")
+
+        # profiler = Profiler()
+        # profiler.start()
+
+        fp = file_stream_reader(filename)
+        if parse_type == "fixed": 
+            bills = parse(fp, [7,8,30], parse_type=parse_type)
+        elif parse_type == "mobile":
+            bills = parse(fp, parse_type=parse_type)
+
+        print_errors(bills)
+        # print_bill_ranges(bills)
+
+        bad_lines = get_bad_lines(bills)
+        print("purging bad lines...")
+        purge_bad_lines(filename, bad_lines, output_route)
+
+        end_time = datetime.now()
+
+        # profiler.stop()
+        # output = profiler.output_html()
+        # print("wrapping up profiler...")
+        # fp = open("profile_run.html", "w")
+        # fp.write(output)
+        # fp.close();
+        print(f"validating time: {end_time - start_time}")
     
-    # profiler.stop()
-    # output = profiler.output_html()
-    # print("wrapping up profiler...")
-    # fp = open("profile_run.html", "w")
-    # fp.write(output)
-    # fp.close();
-    print(f"validating time: {end_time - start_time}")
+    global_end_time = datetime.now()
+        
+    print(f"global validating time: {global_end_time - global_start_time}")
 
 if __name__ == '__main__':
+    
     main()
-
+    
