@@ -1,0 +1,106 @@
+# Errores y Explicaciones
+
+## Error 1:
+### Mensaje de Error:
+"Person ID is duplicated."
+### Explicación: Este error indica que hay un duplicado del ID de persona en los datos.
+
+## Error 2:
+### Mensaje de Error:
+"there is not the minimum length for tokens"
+### Explicación: Este error se produce cuando la longitud de los tokens es inferior al mínimo requerido.
+
+## Error 3:
+### Mensaje de Error:
+"there is not the required length for tokens"
+### Explicación: Este error indica que la longitud de los tokens no cumple con los requisitos específicos.
+
+## Error 4:
+### Mensaje de Error:
+"missing values in parsed file"
+### Explicación: Este error señala la presencia de valores faltantes en el archivo analizado.
+
+## Error 5:
+### Mensaje de Error:
+"missing billed period"
+### Explicación: Este error se produce cuando falta el período facturado en los datos.
+
+## Error 6:
+### Mensaje de Error:
+"length of tokens are not 5"
+### Explicación: Este error indica que la longitud de los tokens no es igual a 5.
+
+## Error 7:
+### Mensaje de Error:
+"length of tokens are not 4"
+### Explicación: Este error se produce cuando la longitud de los tokens no es igual a 4.
+
+## Error 8:
+### Mensaje de Error:
+"length of tokens are not 2"
+### Explicación: Este error indica que la longitud de los tokens no es igual a 2.
+
+## Error 9:
+### Mensaje de Error:
+"no tokens enough"
+### Explicación: Este error se produce cuando no hay suficientes tokens disponibles.
+
+## Error 10:
+### Mensaje de Error:
+"no authorization logic"
+### Explicación: Este error indica la ausencia de lógica de autorización.
+
+## Error 11:
+### Mensaje de Error:
+"incorrect nit pattern"
+### Explicación: Este error señala un patrón de NIT (Número de Identificación Tributaria) incorrecto.
+
+## Error 12:
+### Mensaje de Error:
+"0700100 found after the first occurrence of 0800100"
+### Explicación: Este error indica que se encontró "0700100" después de la primera aparición de "0800100".
+
+## Error 13:
+### Mensaje de Error:
+"cant divide length of tokens by 5"
+### Explicación: Este error se produce cuando no es posible dividir la longitud de los tokens por 5.
+
+## Error 14:
+### Mensaje de Error:
+"cant divide length of tokens by 2"
+### Explicación: Este error indica que no se puede dividir la longitud de los tokens por 2.
+
+## Error 15:
+### Mensaje de Error:
+"cant divide length of tokens by 3"
+### Explicación: Este error se produce cuando no es posible dividir la longitud de los tokens por 3.
+
+## Error 16:
+### Mensaje de Error:
+"invalid token size"
+### Explicación: Este error señala un tamaño de token no válido.
+
+## Error 17:
+### Mensaje de Error:
+"not 7 tokens"
+### Explicación: Este error se produce cuando la cantidad de tokens no es igual a 7.
+
+## Error 18:
+### Mensaje de Error:
+"invalid more than 7 tokens"
+### Explicación: Este error indica que hay más de 7 tokens, lo cual no es válido.
+
+## Error 19:
+### Mensaje de Error:
+"invalid more than 6 tokens"
+### Explicación: Este error se produce cuando hay más de 6 tokens, lo cual no es válido.
+
+## Error 20:
+### Mensaje de Error:
+"invalid more than 2 tokens"
+### Explicación: Este error indica que hay más de 2 tokens, lo cual no es válido.
+
+## Error 21:
+### Mensaje de Error:
+"invalid number of tokens"
+### Explicación: Este error se refiere a una cantidad incorrecta de tokens sin proporcionar detalles específicos.

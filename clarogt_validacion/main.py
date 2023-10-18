@@ -98,7 +98,7 @@ def main():
     
     global_start_time = datetime.now()
     
-    path = "../casos/movil/ClaroGT_FE_TMovil_AGOSTO/"
+    path = "/home/vakord/Work/bill_parser/casos/movil/TMovil_CasosValidacion/"
     dir_list = os.listdir(path)
     for file in dir_list:
         print(f"iniciando validacion para archivo: {file}")
