@@ -546,6 +546,9 @@ def parse_300104(bill, line_index, parsed):
 
     elif detail == "2DETALLE DE VIDEO LLAMADAS":
         parse_by_consumption_detail(line_index, parsed, bill, [(38,66),(125,154)], 6)
+        
+    elif detail == "2DETALLE DE LLAMADAS DE LARGA DISTANCIA INTERNACIONAL POR 147":
+        parse_by_consumption_detail(line_index, parsed, bill ,[(40,63),(123,146)], 6)
 
     elif detail == "2DETALLE LLAMADAS POR COBRAR":
         line = parsed.predicate.replace("|", " ")
@@ -568,8 +571,8 @@ def parse_300104(bill, line_index, parsed):
     elif detail.startswith("2DETALLE DE NAVEGACI"):
         parse_by_consumption_detail(line_index, parsed, bill, [(20,50),(103,133)], 5)
         
-    else:
-        print(f"not implemented detail: {detail}")
+    # else:
+    #     print(f"not implemented detail: {detail}")
         # append_line_error(bill, parsed, line_index, f"not implemented consumption detail {detail}")
         
 
