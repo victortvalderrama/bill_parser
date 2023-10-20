@@ -271,22 +271,22 @@ parse_200004 = partial(generic_predicate, field_name="20004_total")
 
 def parse_200100(bill, line_index, parsed):
     bill._200101 = False
+    bill._200102 = False
+    bill._200103 = False
+    bill._200104 = False
     
 def parse_200101(bill, line_index, parsed):
     bill._200101 = True
-    bill._200102 = False
     
 def parse_200102(bill, line_index, parsed):
     if bill._200101 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
     bill._200102 = True
-    bill._200103 = False
 
 def parse_200103(bill, line_index, parsed):
     if bill._200102 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
     bill._200103 = True
-    bill._200104 = False
 
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 2)
 
@@ -303,34 +303,35 @@ def parse_200105(bill, line_index, parsed):
 
 def parse_200200(bill, line_index, parsed):
     bill._200201 = False
+    bill._200202 = False
+    bill._200203 = False
+    bill._200204 = False
+    bill._200205 = False
+    bill._200206 = False
+    bill._200207 = False
 
 def parse_200201(bill, line_index, parsed):
     bill._200201 = True
-    bill._200202 = False
 
 def parse_200202(bill, line_index, parsed):
     if bill._200201 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
     bill._200202 = True
-    bill._200203 = False
 
 def parse_200203(bill, line_index, parsed):
     if bill._200202 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
     bill._200203 = True
-    bill._200204 = False
 
 def parse_200204(bill, line_index, parsed):
     if bill._200203 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
     bill._200204 = True
-    bill._200205 = False
 
 def parse_200205(bill, line_index, parsed):
     if bill._200204 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
     bill._200205 = True
-    bill._200206 = False
 
     tokens = maximum_mobile_tokens(line_index, parsed, bill, 2)
     
@@ -338,7 +339,6 @@ def parse_200206(bill, line_index, parsed):
     if bill._200205 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
     bill._200206 = True
-    bill._200207 = False
 
     tokens = parsed.predicate[86:].split()
     tokens_length = len(tokens)
@@ -359,6 +359,7 @@ def parse_200301(bill, line_index, parsed):
     bill._200301 = True
     bill._200305 = False
     bill._200306 = False
+    bill._200307 = False
     
     if bill.print_period:
         append_line_error(bill, parsed, line_index, "invalid bill at Detail Group Services, print period was on S")
@@ -385,7 +386,6 @@ def parse_200306(bill, line_index, parsed):
     if bill._200305 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
     bill._200306 = True
-    bill._200307 = False
     
 def parse_200307(bill, line_index, parsed):
     if bill._200306 == False:
@@ -436,6 +436,9 @@ def parse_200603(bill, line_index, parsed):
 def parse_300000(bill, line_index, parsed):
     bill._300100 = False
     bill._300101 = False
+    bill._300102 = False
+    bill._300103 = False
+    bill._300104 = False
     
 def parse_300100(bill, line_index, parsed):
     bill._300100 = True
@@ -443,13 +446,11 @@ def parse_300101(bill, line_index, parsed):
     if bill._300100 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
     bill._300101 = True
-    bill._300102 = False
 
 def parse_300102(bill, line_index, parsed):
     if bill._300101 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
     bill._300102 = True
-    bill._300103 = False
     
     bill._300102_predicate = parsed.predicate
 
@@ -457,7 +458,6 @@ def parse_300103(bill, line_index, parsed):
     if bill._300102 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
     bill._300103 = True
-    bill._300104 = False
 
 
 def parse_300104(bill, line_index, parsed):
@@ -587,6 +587,11 @@ def parse_300105(bill, line_index, parsed):
 
 def parse_400000(bill, line_index, parsed):
     bill._400001 = False
+    bill._400002 = False
+    bill._400003 = False
+    bill._400004 = False
+    bill._400005 = False
+    bill._400006 = False
 
 def parse_400001(bill, line_index, parsed):
     bill._400001 = True
@@ -599,13 +604,11 @@ def parse_400002(bill, line_index, parsed):
     if bill._400001 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
     bill._400002 = True
-    bill._400003 = False
 
 def parse_400003(bill, line_index, parsed):
     if bill._400002 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
     bill._400003 = True
-    bill._400004 = False
 
     tokens = parsed.predicate.split()
     last_tokens = tokens.pop()
@@ -623,7 +626,6 @@ def parse_400004(bill, line_index, parsed):
     if bill._400003 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
     bill._400004 = True
-    bill._400005 = False
     
     range_list = [(25,55)]
     line = parsed.predicate
@@ -643,7 +645,6 @@ def parse_400005(bill, line_index, parsed):
     if bill._400004 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
     bill._400005 = True
-    bill._400006 = False
 
     range_list = [(1,20)]
     tokens = remove_string_segments(parsed.predicate, range_list)
