@@ -656,9 +656,8 @@ def parse_400005(bill, line_index, parsed):
     bill._400005 = True
     bill._400006 = False
     bill._400004 = False
-
-    range_list = [(1,20)]
-    tokens = remove_string_segments(parsed.predicate, range_list)
+    
+    tokens = parsed.predicate.split("NIT:")
     if len(tokens) != 2:
         append_line_error(bill, parsed, line_index, "not 2 tokens")     
     
@@ -675,6 +674,7 @@ def parse_400007(bill, line_index, parsed):
     bill.missing_400007 = False
     
 def parse_900000(bill, line_index, parsed):
+    # pass
     if bill.missing_400007:
         append_line_error(bill, parsed, line_index, "missing 400007 in section 400001")
     
