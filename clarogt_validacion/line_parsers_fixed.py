@@ -96,7 +96,8 @@ parse_0101700 = partial(generic_predicate, field_name="eMails")
 
 # SECTION 020000
 def parse_0200000(bill,line_index,parsed):
-    undefined_line(line_index, parsed)
+    bill._3200000 = False
+    bill._3200100 = False
         
 def parse_0200100(bill,line_index,parsed):
     tokens = parsed.predicate.split()
@@ -434,19 +435,36 @@ parse_3000700 = partial(generic_predicate, field_name="3000700_motivo")
     
 # 3200000
 
-parse_3200000 = partial(generic_predicate, field_name="320000_id")
+def parse_3200000(bill,line_index,parsed):
+    bill._3200000 = True
 
 def parse_3200100(bill,line_index,parsed):
+    bill._3200100 = True
+    
+    if bill._3200000 == False:
+        append_line_error(bill, parsed, line_index, "missing 3200000 section")
     tokens = split_predicate(line_index, parsed, bill, 4)
     if len(tokens) < 4:
         append_line_error(bill, parsed, line_index, "invalid number of tokens")
         
-parse_3200210 = partial(generic_predicate, field_name="3200210_cliente")
+def parse_3200210(bill,line_index,parsed):
+    if bill._3200100 == False:
+        append_line_error(bill, parsed, line_index, "missing 3200100 section")
+        
 parse_3200220 = partial(generic_predicate, field_name="3200220_cliente_dir")
 parse_3200232 = partial(generic_predicate, field_name="3200232_cliente_dir2")
 parse_3200240 = partial(generic_predicate, field_name="3200240_cliente_dir3")
 parse_3200250 = partial(generic_predicate, field_name="3200250_datoY")
 parse_3200260 = partial(generic_predicate, field_name="3200260_cliente_telefono")
+
+def parse_3200300(bill,line_index,parsed):
+    number_of_tokens = len(parsed.predicate.split())
+    date = parsed.predicate.split()[0]
+    if date == "00/00/0000":
+        append_line_error(bill, parsed, line_index, "invalid date")
+        
+    if number_of_tokens < 6:
+        append_line_error(bill, parsed, line_index, f"invalid number of tokens expected 6 got {number_of_tokens}")
 
 def parse_3200320(bill,line_index,parsed):
     tokens = split_predicate(line_index, parsed, bill, 6)
@@ -478,5 +496,6 @@ def parse_3200600(bill,line_index,parsed):
 
 parse_3200610 = partial(generic_predicate, field_name="3200610_notasAbonado")
 
-parse_3200700 = partial(generic_predicate, field_name="3200700_motivo")
+def parse_3200700(bill,line_index,parsed):
+    bill._3200100 = False
     

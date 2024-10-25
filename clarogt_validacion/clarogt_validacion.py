@@ -60,7 +60,7 @@ def print_errors(bills):
         if text_error:
             print(f"\tTextual errors found: ")
             for error in bill.errors:
-                print(f"\t\tError at line {error.line_index}, section: {error.line_section_index}: {error.section_name}\n\t\t{error.error}\n\t\toriginal predicate: \"{error.predicate}\"")
+                print(f"\t\tError at line {error.line_index}, section: {error.line_section_index}: {error.section_name}\n\t\t{error.error}\n\t\toriginal predicate: \"{error.predicate}\"\n")
 
     print("\nTotal bills parsed: ", len(bills))
     print("Total bills with error: ", total_errored)

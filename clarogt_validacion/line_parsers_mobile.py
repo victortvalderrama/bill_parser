@@ -587,14 +587,12 @@ def parse_300105(bill, line_index, parsed):
 
 def parse_400000(bill, line_index, parsed):
     bill._400001 = False
-    bill._400002 = False
-    bill._400003 = False
-    bill._400004 = False
-    bill._400005 = False
-    bill._400006 = False
+    bill.missing_400007 = False
 
 def parse_400001(bill, line_index, parsed):
     bill._400001 = True
+    bill._400007 = True
+    bill.missing_400007 = True
 
     tokens = parsed.predicate.split()
     if len(tokens) > 2:
@@ -603,12 +601,21 @@ def parse_400001(bill, line_index, parsed):
 def parse_400002(bill, line_index, parsed):
     if bill._400001 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
+        
+    if not bill._400007:
+        append_line_error(bill, parsed, line_index, "missing 400007 in section 400001") 
+        
     bill._400002 = True
+    bill._400003 = False
+    bill._400007 = False
+    bill.missing_400007 = True
 
 def parse_400003(bill, line_index, parsed):
     if bill._400002 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
     bill._400003 = True
+    bill._400004 = False
+    bill._400002 = False
 
     tokens = parsed.predicate.split()
     last_tokens = tokens.pop()
@@ -626,6 +633,8 @@ def parse_400004(bill, line_index, parsed):
     if bill._400003 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
     bill._400004 = True
+    bill._400005 = False
+    bill._400003 = False
     
     range_list = [(25,55)]
     line = parsed.predicate
@@ -645,14 +654,27 @@ def parse_400005(bill, line_index, parsed):
     if bill._400004 == False:
         append_line_error(bill, parsed, line_index, "error in hierarchy")
     bill._400005 = True
-
-    range_list = [(1,20)]
-    tokens = remove_string_segments(parsed.predicate, range_list)
+    bill._400006 = False
+    bill._400004 = False
+    
+    tokens = parsed.predicate.split("NIT:")
     if len(tokens) != 2:
         append_line_error(bill, parsed, line_index, "not 2 tokens")     
     
 def parse_400006(bill, line_index, parsed):
+    if bill._400005 == False:
+        append_line_error(bill,parsed, line_index, "error in hierarchy")
     bill._400006 = True
+    bill._400005 = False
+    
+def parse_400007(bill, line_index, parsed):
+    if bill._400006 == False:
+        append_line_error(bill, parsed, line_index, "error in hierarchy")
+    bill._400007 = True
+    bill.missing_400007 = False
     
 def parse_900000(bill, line_index, parsed):
-    pass
+    # pass
+    if bill.missing_400007:
+        append_line_error(bill, parsed, line_index, "missing 400007 in section 400001")
+    
